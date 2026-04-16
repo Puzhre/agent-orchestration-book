@@ -188,9 +188,203 @@ Here's our research brief: [paste UX Researcher output]
 - MCP requires an external server
 - No runtime execution guarantee
 
-## 4.7 In-Depth Comparison of Five Communication Approaches
+## 4.7 Deep Dive: Swarm Handoff vs SQLite Mail - A Detailed Comparison
 
-| Dimension | Bracket-Paste | send-keys | SQLite Mail | Shared Files | MCP Memory |
+### The Architectural Divide
+
+**Swarm Handoff (agency-agents-zh)** represents a human-in-the-loop approach where context transfer happens through structured handoff templates, while **SQLite Mail (Overstory)** implements a machine-to-machine coordination system with typed protocol messages.
+
+### Implementation Architecture
+
+#### Swarm Handoff: Memory-Based Context Transfer
+
+```typescript
+// Core handoff workflow
+interface HandoffContext {
+  decisions: string[];
+  deliverables: string[];
+  tags: string[];
+  checkpoint: string;
+}
+
+// MCP memory operations
+1. Agent A completes work → remember(decisions + deliverables + tags)
+2. Agent B starts → recall(search context by tags)
+3. On failure → rollback(return to checkpoint)
+```
+
+**Key Components:**
+- **7 standardized handoff templates**: Standard handoff, QA pass, QA fail, escalation report, stage gate, sprint handoff, incident handoff
+- **MCP memory server**: Provides semantic search and automatic context passing
+- **Rollback mechanism**: Unique ability to return to previous checkpoints
+- **Human-driven default mode**: Copy-paste between Agent outputs and inputs
+
+#### SQLite Mail: Protocol-Based Coordination
+
+```typescript
+// Mail system with strong typing
+interface MailMessage {
+  id: string;
+  from: string;
+  to: string;
+  subject: string;
+  body: string;
+  type: MailProtocolType;
+  priority: "low" | "normal" | "high" | "urgent";
+  threadId: string | null;
+  payload: string | null; // JSON-encoded structured data
+  read: boolean;
+  createdAt: string;
+}
+
+// 9 protocol types with structured payloads
+type MailProtocolType = 
+  | "dispatch"      // Coordinator → Lead: Task dispatch
+  | "assign"        // Supervisor → Worker: Work assignment
+  | "worker_done"    // Worker → Supervisor: Task completion
+  | "merge_ready"    // Supervisor → Merger: Request merge
+  | "merged"         // Merger → Supervisor: Merge success
+  | "merge_failed"   // Merger → Worker: Merge failed
+  | "escalation"     // Any → Upper: Issue escalation
+  | "health_check"   // Watchdog → Agent: Health probe
+  | "decision_gate"  // Agent → Human: Human-machine decision
+```
+
+**Key Components:**
+- **SQLite WAL mode**: Ensures concurrent access safety
+- **Hook injection**: Messages automatically injected via UserPromptSubmit hook
+- **Group addresses**: `@all`, `@builders`, `@scouts` resolve to agent lists
+- **Threaded conversations**: Maintains conversation context across messages
+
+### Detailed Comparison Matrix
+
+| Dimension | Swarm Handoff | SQLite Mail |
+|-----------|---------------|-------------|
+| **Primary Use Case** | Human-AI collaboration workflows | Machine-to-machine coordination |
+| **Context Transfer** | Semantic search via tags | Structured protocols with payloads |
+| **Error Recovery** | Rollback to checkpoints | Retry with escalation paths |
+| **Scalability** | Limited by human handoff capacity | High (automatic protocol routing) |
+| **Real-time Performance** | Medium (depends on human speed) | High (1-5ms mail operations) |
+| **Complexity Management** | Templates reduce cognitive load | Type system prevents ambiguity |
+| **Multi-Agent Orchestration** | Manual coordination | Automatic hierarchical dispatch |
+| **Failure Handling** | Human intervention required | Automated escalation workflows |
+
+### When to Choose Each Approach
+
+#### Choose Swarm Handoff When:
+- You need human oversight in the workflow
+- Context transfer requires semantic understanding
+- Projects involve creative decision-making
+- Team size is small (< 10 agents)
+- Quality control requires human judgment
+- You need rollback capabilities for iterative work
+
+#### Choose SQLite Mail When:
+- You need fully automated multi-agent coordination
+- Structured protocols are required for reliability
+- Large-scale deployment (> 10 agents)
+- Machine-to-machine communication dominates
+- Real-time coordination is critical
+- Hierarchical organization is needed
+
+### Implementation Patterns
+
+#### Swarm Handoff Implementation
+```markdown
+# Standard Handoff Template
+## 元数据
+- 发送方: [智能体名称]（[部门]）
+- 接收方: [智能体名称]（[部门]）
+- 阶段: 第 [N] 阶段 — [阶段名称]
+- 任务引用: [任务 ID]
+- 优先级: [紧急 / 高 / 中 / 低]
+
+## 上下文
+- 项目: [项目名称]
+- 当前状态: [具体进展]
+- 相关文件: [文件列表]
+- 依赖: [依赖关系]
+- 约束: [技术约束]
+
+## 交付要求
+- 需要什么: [具体交付物]
+- 验收标准: [可衡量的标准]
+- 参考材料: [相关链接]
+
+## 质量预期
+- 必须通过: [质量标准]
+- 需要的证据: [完成证明]
+- 下一步: [接收方要求]
+```
+
+#### SQLite Mail Implementation
+```typescript
+// Sending a task dispatch
+mail.sendProtocol({
+  from: "coordinator",
+  to: "lead-1",
+  subject: "Implement user authentication",
+  type: "dispatch",
+  priority: "high",
+  payload: {
+    taskId: "auth-001",
+    specPath: "specs/auth-spec.md",
+    capability: "backend",
+    fileScope: ["src/auth/", "tests/auth/"],
+    skipScouts: true
+  }
+});
+
+// Receiving and processing
+const messages = mail.check("lead-1");
+for (const msg of messages) {
+  if (msg.type === "dispatch") {
+    const payload = parsePayload(msg, "dispatch");
+    // Process task dispatch
+  }
+}
+```
+
+### Performance Characteristics
+
+#### Swarm Handoff
+- **Latency**: Variable (human-dependent)
+- **Reliability**: High (human oversight)
+- **Throughput**: Low (limited by human speed)
+- **Scalability**: Poor beyond small teams
+
+#### SQLite Mail
+- **Latency**: 1-5ms per operation
+- **Reliability**: High (WAL mode, type safety)
+- **Throughput**: High (concurrent access)
+- **Scalability**: Excellent (hierarchical routing)
+
+### Integration Patterns
+
+#### Hybrid Approach
+Many successful orchestrators combine both approaches:
+
+1. **SQLite Mail** for machine-to-machine coordination
+2. **Swarm Handoff** for human-in-the-loop decision points
+3. **MCP Memory** for cross-session context persistence
+
+### Real-World Examples
+
+#### agency-agents-zh NEXUS System
+- Uses handoff templates for quality gates
+- MCP memory for cross-session context
+- Human oversight at critical decision points
+- Rollback capability for iterative refinement
+
+#### Overstory System
+- SQLite mail for all inter-agent communication
+- Protocol types for different coordination needs
+- Hook injection for seamless integration
+- Group addresses for broadcast messaging
+
+## 4.8 In-Depth Comparison of Five Communication Approaches
+
+|| Dimension | Bracket-Paste | send-keys | SQLite Mail | Shared Files | MCP Memory |
 |-----------|--------------|-----------|-------------|-------------|------------|
 | **Reliability** | Medium | Low | High | Medium | Medium |
 | **Latency** | Low | Low | Medium | Medium | High |
