@@ -134,7 +134,7 @@ This is key to understanding the boundary between hard and soft orchestration:
 | Mechanism | "Please follow these rules" | "I will check if you follow them" |
 | Bypassability | Agent can ignore or delete | Agent cannot modify orchestrator code |
 | Recovery | None (once deleted, it's gone) | Auto-restore from git |
-| Use case | Behavior guidance, preference settings | Safety底线, non-negotiable constraints |
+| Use case | Behavior guidance, preference settings | Safety baseline, non-negotiable constraints |
 
 **One-sentence summary**: Prompt iron laws tell the Agent "what you should do"; rule guards ensure "what you absolutely cannot do."
 
