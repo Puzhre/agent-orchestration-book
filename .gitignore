@@ -1,0 +1,7 @@
+site/
+*.pyc
+.DS_Store
+research/
+SPRINT.md
+FEATURES.md
+site/
