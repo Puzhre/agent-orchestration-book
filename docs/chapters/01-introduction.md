@@ -104,7 +104,7 @@ Agents start as "blank slate" each time, making the same mistakes as before. How
 
 ## 1.3 Design Philosophies of the Five Projects
 
-Each project背后 has different design philosophies that determine its architectural choices and trade-offs:
+Each project has different design philosophies that determine its architectural choices and trade-offs:
 
 ### Tmux-Orchestrator: Minimalism
 
@@ -122,7 +122,9 @@ Philosophy: Use processes and systems to ensure quality. Seven-stage pipelines, 
 
 > "Let users start multi-agent parallel development with one command"
 
-Philosophy: Build frameworks rather than applications. Agent-agnostic design, automatic configuration generation, Dashboard visualization—the goal is to make it easy for anyone to get started quickly. The drawback is insufficient orchestration depth, with the Orchestrator as a single point.
+Philosophy: Build frameworks rather than applications. Agent-agnostic design (Claude Code, Codex, Aider), automatic configuration generation, Dashboard visualization—the goal is to make it easy for anyone to get started quickly. Each agent gets its own git worktree and branch. The drawback is insufficient orchestration depth, with the Orchestrator as a single point.
+
+*Reference: [ComposioHQ/agent-orchestrator](https://github.com/ComposioHQ/agent-orchestrator)*
 
 ### Overstory: Engineering Completeness
 
@@ -130,16 +132,60 @@ Philosophy: Build frameworks rather than applications. Agent-agnostic design, au
 
 Philosophy: Production systems must have multiple layers of protection. 4-layer watchdog, ZFC health checks, structured email protocols, 4-level merge strategies—this is the only project that truly considers "how to precisely recover after an agent crash." The drawback is extremely high complexity.
 
-## 1.4 Book Structure
+### ARIS: Skill-Based Self-Evolution
 
-Over the next nine chapters, we will delve deeper by theme:
+> "A methodology, not a platform. Zero dependencies, zero lock-in. The entire system is plain Markdown files."
 
-- **Chapter 2**: Architecture—Why did these projects choose different topologies?
-- **Chapter 3**: Roles—How are roles defined and constrained?
-- **Chapter 4**: Communication—Five reliable communication schemes between agents
-- **Chapter 5**: Fault Tolerance—Evolution from 1-layer to 4-layer protection
-- **Chapter 6**: Isolation—Four weapons for concurrency safety
-- **Chapter 7**: Knowledge—How to make orchestrators evolve from experience
-- **Chapter 8**: Deployment—From development to production
-- **Chapter 9**: Patterns—Reusable design patterns
-- **Chapter 10**: Roadmap—Specific improvement plans
+Philosophy: Radical lightweight—no framework, no database, no Docker. 62 bundled skills as SKILL.md files readable by any LLM. The key innovation is **self-evolution**: `/meta-optimize` analyzes logs and proposes SKILL.md patches to improve itself. Research Wiki provides persistent knowledge. Swap Claude Code for Codex, Cursor, or any agent and workflows still work.
+
+*Reference: [wanshuiyin/Auto-claude-code-research-in-sleep](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep)*
+
+## 1.4 Industry Perspective: 12-Factor Agents
+
+The [12-Factor Agents](https://github.com/humanlayer/12-factor-agents) project, created by Dex from Humanlayer, proposes 12 principles for building reliable LLM-powered software. Their key insight resonates deeply with our analysis:
+
+> "Most products billing themselves as 'AI Agents' are not all that agentic. A lot of them are mostly deterministic code, with LLM steps sprinkled in at just the right points to make the experience truly magical."
+
+This matches our observation: the best orchestrators are **mostly software, not mostly prompts**. The 12 factors that align with our hard/soft orchestration split:
+
+| Factor | Principle | Our Mapping |
+|--------|-----------|-------------|
+| 1 | Natural Language → Tool Calls | Ch4 Communication (hard interface) |
+| 2 | Own Your Prompts | Ch9 Prompt Engineering (soft) |
+| 3 | Own Your Context Window | Ch11 Knowledge Accumulation (soft) |
+| 4 | Tools Are Just Structured Outputs | Ch10 Skill Systems (soft) |
+| 5 | Unify Execution State & Business State | Ch5 Fault Tolerance (hard) |
+| 6 | Launch/Pause/Resume with Simple APIs | Ch7 Deployment (hard) |
+| 8 | Own Your Control Flow | Ch2 Architecture (hard) |
+| 9 | Compact Errors into Context Window | Ch5 Fault Tolerance (hard) |
+| 10 | Small, Focused Agents | Ch3 Roles (soft) |
+| 12 | Make Your Agent a Stateless Reducer | Ch6 Isolation (hard) |
+
+**Core takeaway**: Hard orchestration owns the control flow, state management, and error handling. Soft orchestration owns the prompts, skills, and context. This aligns perfectly with the "mostly software" insight—reliable agents are built on deterministic scaffolding with LLM intelligence at the edges.
+
+## 1.5 Book Structure
+
+This book is organized into three parts:
+
+**Part I: Hard Orchestration** — Low-level logic that agents cannot modify:
+
+- **Ch2**: Architecture—Five topologies from dual-agent to tree
+- **Ch3**: Roles—Who does what, persistent vs ephemeral
+- **Ch4**: Communication—send-keys to SQLite mail
+- **Ch5**: Fault Tolerance—1-layer to 4-layer protection
+- **Ch6**: Isolation—Four weapons for concurrency safety
+- **Ch7**: Deployment & Daemons—systemd, tmux, cron
+- **Ch8**: Rule Guard—Hard enforcement of constraints
+
+**Part II: Soft Orchestration** — Skills and prompts that agents read:
+
+- **Ch9**: Prompt Engineering—Iron rules, MISSION, SPRINT
+- **Ch10**: Skill Systems—SKILL.md, templates, MCP tools
+- **Ch11**: Knowledge Accumulation—LEARNINGS, memory, experience
+- **Ch12**: Pipeline Orchestration—Multi-step workflows, quality gates
+
+**Part III: Practice & Evolution** — Build and evolve:
+
+- **Ch13**: Antipatterns—Pitfalls across hard and soft
+- **Ch14**: Hands-On—Build a minimal orchestrator from scratch
+- **Ch15**: Evolution Roadmap—From scripts to autonomous systems

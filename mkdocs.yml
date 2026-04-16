@@ -59,10 +59,11 @@ plugins:
             Communication: 通信机制
             Fault Tolerance: 容错与恢复
             Isolation & Concurrency: 隔离与并发
-            Knowledge Accumulation: 知识积累
             Deployment & Daemons: 部署与守护
+            Rule Guard: 规则守护
             Prompt Engineering: Prompt工程
             Skill Systems: Skill系统
+            Knowledge Accumulation: 知识积累
             Pipeline Orchestration: 流水线编排
             Antipatterns: 反模式
             Hands-On: 实战
@@ -111,16 +112,17 @@ nav:
     - 4. Communication: chapters/04-communication.md
     - 5. Fault Tolerance: chapters/05-fault-tolerance.md
     - 6. Isolation & Concurrency: chapters/06-isolation.md
-    - 7. Knowledge Accumulation: chapters/07-knowledge.md
-    - 8. Deployment & Daemons: chapters/08-deployment.md
+    - 7. Deployment & Daemons: chapters/07-deployment.md
+    - 8. Rule Guard: chapters/08-rule-guard.md
   - Part II Soft Orchestration:
     - 9. Prompt Engineering: chapters/09-prompt-engineering.md
     - 10. Skill Systems: chapters/10-skill-system.md
-    - 11. Pipeline Orchestration: chapters/11-pipeline-orchestration.md
-    - 12. Antipatterns: chapters/12-antipatterns.md
+    - 11. Knowledge Accumulation: chapters/11-knowledge.md
+    - 12. Pipeline Orchestration: chapters/12-pipeline-orchestration.md
   - Part III Practice & Evolution:
-    - 13. Hands-On: chapters/13-hands-on.md
-    - 14. Evolution Roadmap: chapters/14-evolution.md
+    - 13. Antipatterns: chapters/13-antipatterns.md
+    - 14. Hands-On: chapters/14-hands-on.md
+    - 15. Evolution Roadmap: chapters/15-evolution.md
   - Appendix:
     - Glossary: appendix/glossary.md
     - Project Index: appendix/project-index.md

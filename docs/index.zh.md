@@ -1,43 +1,47 @@
 # 编排Agent：从硬守护到软约束
 
-> AI Agent编排的系统化指南——让Agent持续工作，且做对的事
+> 系统化探索AI Agent编排——当Agent 7×24运行时，谁来守护守护者？
 
-[:fontawesome-brands-github: GitHub Star](https://github.com/Puzhre/agent-orchestration-book){: .md-button .md-button--primary }
+[Star on GitHub](https://github.com/Puzhre/agent-orchestration-book){: .md-button .md-button--primary }
 
-## 你将学到什么
+## 本书内容
 
-本书从多个开源AI Agent编排器项目和真实生产系统中系统化整合知识：
+本书系统化探索如何编排AI Agent进行自主、长时间运行的工作。从实战项目中提炼可复用的模式。
 
-**Part I: 硬编排** — 用基础设施让Agent持续工作：
-- 进程守护（systemd、tmux）
-- 定时调度（cron、自调度循环）
-- 状态持久化与故障恢复
-- Agent间通信（bracket-paste、结构化邮件、文件协调）
-- 并发隔离（git worktree、进程隔离、文件锁）
+**Part I: 硬编排** — 底层硬逻辑，确保Agent持续运行（Agent无法修改）：
 
-**Part II: 软编排** — 用提示词和技能模板编排Agent行为：
-- Agent的Prompt工程（规则块、任务注入、SPRINT驱动）
-- Skill系统（可复用模板、MCP工具）
-- 流水线编排（多阶段流程、质量门禁）
-- 反模式与失败模式
+| 章节 | 主题 | 核心内容 |
+|------|------|---------|
+| 1 | 导论 | 为什么需要编排、五大痛点 |
+| 2 | 架构模式 | 从双Agent到树形的五种拓扑 |
+| 3 | 角色体系 | 谁做什么、持久角色vs临时角色 |
+| 4 | 通信机制 | send-keys、bracket-paste、SQLite邮件 |
+| 5 | 容错与恢复 | Watchdog、渐进恢复、快速崩溃保护 |
+| 6 | 隔离与并发 | git worktree、进程隔离、文件锁 |
+| 7 | 部署与守护 | systemd、tmux、nohup、cron |
+| 8 | 规则守护 | 铁律块、外部守护脚本、完整性校验 |
+
+**Part II: 软编排** — 写在Skill/Prompt里让Agent读取（引导Agent行为）：
+
+| 章节 | 主题 | 核心内容 |
+|------|------|---------|
+| 9 | Prompt工程 | 铁律、MISSION注入、SPRINT驱动 |
+| 10 | Skill系统 | 可复用技能、SKILL.md、模板、MCP工具 |
+| 11 | 知识积累 | LEARNINGS.md、MCP记忆、经验文档 |
+| 12 | 流水线编排 | 多步工作流、质量门禁 |
 
 **Part III: 实战与演化** — 搭建和演化你自己的编排器：
-- 实战：从零搭建你的第一个编排器
-- 演化路线：从"勉强能跑"到"智能自愈"
 
-## 研究素材
+| 章节 | 主题 | 核心内容 |
+|------|------|---------|
+| 13 | 反模式 | 硬软编排中必须避开的坑 |
+| 14 | 实战 | 从零搭建最小编排器 |
+| 15 | 演化路线 | 从脚本到自治系统 |
 
-| 项目 | 核心特点 |
-|------|----------|
-| [Tmux-Orchestrator](https://github.com/Jedward23/Tmux-Orchestrator) | 极简自调度，层次分工 |
-| [agency-agents-zh](https://github.com/jnMetaCode/agency-agents-zh) | 50+智能体多阶段流水线 |
-| [Composio agent-orchestrator](https://github.com/ComposioHQ/agent-orchestrator) | Orchestrator-Worker，git worktree |
-| [Overstory](https://github.com/jayminwest/overstory) | 分层Watchdog，结构化邮件 |
+## 硬编排 vs 软编排：核心区别
 
-## 贡献
+**硬编排** = 底层硬逻辑。以基础设施方式运行（守护进程、脚本、cron），Agent无法修改。外部强制约束——Agent崩溃了，Watchdog重启它；Agent删了规则，守护脚本恢复它。
 
-欢迎贡献！Fork [本仓库](https://github.com/Puzhre/agent-orchestration-book)，创建特性分支，提交Pull Request。
+**软编排** = 写在Skill和Prompt里让Agent读取。通过提供指令、经验、可复用模板来引导行为。依赖Agent的配合——Agent读并遵守，但理论上可以忽略。
 
-## 许可证
-
-[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) — 欢迎转载，请注明出处。
+最健壮的系统是两者结合：硬编排守住不可妥协的底线，软编排引导其他一切。
