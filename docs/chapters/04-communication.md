@@ -395,7 +395,7 @@ Many successful orchestrators combine both approaches:
 | **Human readability** | Yes | Yes | Requires tools | Yes | Yes |
 | **Offline support** | No | No | Yes | Yes | Implementation-dependent |
 
-## 4.8 Core Principles of Communication Design
+## 4.10 Core Principles of Communication Design
 
 Communication design principles distilled from the five projects:
 
