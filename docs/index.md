@@ -8,6 +8,39 @@
 
 This book systematically explores how to orchestrate AI Agents for autonomous, long-running work. It draws from real-world projects and distills them into reusable patterns.
 
+### Research Foundation: Four Production Systems
+
+This book analyzes four production-grade orchestrator systems, each addressing orchestration challenges in unique ways:
+
+| Project | Architecture | Key Innovation | Best For |
+|---------|-------------|----------------|----------|
+| **Tmux-Orchestrator** | Terminal-based | send-keys + capture-pane monitoring | Simple agent coordination |
+| **agency-agents-zh** | Human-in-loop | Swarm handoff templates + MCP memory | Creative workflows with oversight |
+| **Composio** | File-based | Shared todo.md coordination | Minimalist team coordination |
+| **Overstory** | SQLite mail | Typed protocol messaging | Large-scale automation |
+
+### Key Research Findings
+
+#### Communication Patterns Analysis
+The research reveals a clear evolution from simple terminal interaction to structured messaging:
+- **Bracket-paste**: Most reliable for multi-line commands
+- **SQLite mail**: Best for machine-to-machine coordination
+- **Swarm handoff**: Optimal for human-AI collaboration
+- **Shared files**: Simplest for small teams
+- **MCP memory**: Most flexible for cross-session context
+
+#### Architectural Patterns
+- **Hierarchical delegation**: Orchestrator → Team Lead → Specialist Workers
+- **Session isolation**: Git worktrees prevent cross-contamination
+- **Fault tolerance**: Multiple recovery strategies (restart, rollback, escalate)
+- **Quality gates**: Automated validation before task completion
+
+#### Implementation Insights
+- **Type safety**: Strong typing prevents communication ambiguity
+- **Persistence**: Messages must survive agent crashes
+- **Explicit routing**: Don't make agents "guess" communication paths
+- **Group addressing**: Essential for scaling beyond 3 agents
+
 **Part I: Hard Orchestration** — Low-level hard logic that keeps agents running:
 
 | Chapter | Topic | Key Content |
