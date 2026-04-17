@@ -19,18 +19,21 @@ An orchestrator is not just another agent, but a **control system that enables e
 
 ## 1.2 Five Core Pain Points Orchestrators Must Solve
 
-From analyzing source code of five projects, we've identified five critical pain points that orchestrators must address:
+From analyzing source code of five production projects, we've identified five critical pain points that orchestrators must address:
 
-### Pain Point 1: Context Window Limitations
+### Pain Point 1: Context Window Fragmentation
 
-Individual agents have limited context windows (128K, 200K, etc.). When a project's codebase, historical decisions, and task lists exceed this capacity, agents start to "forget."
+Individual agents have limited context windows (128K, 200K, etc.). When a project's codebase, historical decisions, and task lists exceed this capacity, agents start to "forget." The problem exists in one unified context (human understanding) but orchestration systems fragment it across many agents.
 
-- **Tmux-Orchestrator's approach**: Three-tier architecture (Orchestrator→PM→Engineer), each layer focusing only on its own context
-- **agency-agents-zh's approach**: 50+ specialized agents, each responsible for a narrow domain
-- **Overstory's approach**: Scout only explores, Builder only codes, Reviewer only reviews—roles as context isolation
+**Production Evidence**: Context window fragmentation causes information loss in multi-agent systems. Task specs are compressed explanations, mail messages are short summaries, file scope restrictions prevent agents from seeing related code.
+
+**Cross-Project Approaches**:
+- **Tmux-Orchestrator**: Three-tier architecture (Orchestrator→PM→Engineer), each layer focusing only on its own context
+- **agency-agents-zh**: 50+ specialized agents, each responsible for a narrow domain
+- **Overstory**: Scout only explores, Builder only codes, Reviewer only reviews—roles as context isolation
 - **Our approach**: Architect + Executor dual-agent, architect doesn't touch code, executor doesn't touch planning
 
-**Key Insight**: Context isolation is not an optional optimization but a fundamental constraint of orchestration.
+**Key Insight**: Context isolation is not an optional optimization but a fundamental constraint of orchestration. Multi-agent systems multiply failure probabilities rather than adding them - a 5% individual error rate becomes ~14% aggregate failure probability with 3 agents.
 
 ### Pain Point 2: Insufficient Agent Reliability
 

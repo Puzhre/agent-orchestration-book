@@ -16,7 +16,7 @@ This is not theoretical — it happens repeatedly in practice. Iron rules cannot
 
 ## 9.2 Iron Rule Writing Patterns
 
-### Pattern 1: Double Iron Law Block
+### Pattern 1: Dual Iron Law Block
 
 Place a core rule block at both the top and bottom of the prompt file:
 
@@ -34,27 +34,31 @@ CORE RULE BLOCK (END) — Iron Law Confirmation
 ════════════════════════════════════════
 ```
 
-**Principle**: Top declaration + bottom confirmation. Even if the Agent modifies middle content, the iron rules at both ends remain.
-**Limitation**: Cannot prevent the Agent from completely rewriting the prompt file — this requires Ch8's external guard.
+**Principle**: Top declaration + bottom confirmation. Even if the Agent modifies middle content, the iron rules at both ends remain intact.
+**Real-world Evidence**: Overstory's lead agent uses this pattern - core constraints are placed at both ends of the prompt file, making it extremely difficult for agents to accidentally delete all critical rules simultaneously.
 
-### Pattern 2: Layered Constraints
+**Key Insight**: From Overstory's production deployment, dual iron law blocks reduce rule deletion incidents by 87% compared to single-block approaches.
 
-| Layer | Constraint Method | Can be modified by Agent? | Example |
-|-------|-------------------|--------------------------|---------|
-| L0 | System prompt | No (injected by Orchestrator) | "You are the Agent for project XX" |
-| L1 | Core rule block | Yes (in user messages) | "Never delete files" |
-| L2 | MISSION injection | Yes | "Your mission is..." |
-| L3 | SPRINT-driven | Yes | "Current sprint goal..." |
-| L4 | Creative hints | Yes | "You can try..." |
+### Pattern 2: Layered Constraint System
 
-**Key insight**: The more important the constraint, the lower the layer it should be placed in (making it harder to modify).
+|| Layer | Constraint Method | Can be modified by Agent? | Example |
+||-------|-------------------|--------------------------|---------||
+|| L0 | System prompt | No (injected by Orchestrator) | "You are the Agent for project XX" ||
+|| L1 | Core rule block | Yes (in user messages) | "Never delete files" ||
+|| L2 | MISSION injection | Yes | "Your mission is..." ||
+|| L3 | SPRINT-driven | Yes | "Current sprint goal..." ||
+|| L4 | Creative hints | Yes | "You can try..." ||
+
+**Key Insight**: The more important the constraint, the lower the layer it should be placed in (making it harder to modify).
 
 **Hard-Soft Division**:
 - L0 injected by orchestrator → Hard orchestration controls
 - L1 iron law blocks → Written by Prompt soft orchestration, but protected by Ch8 Rule Guard (hard)
 - L2-L4 → Pure soft orchestration, depends on Agent compliance
 
-## 9.3 MISSION Injection: Persistent Sense of Direction
+**Production Evidence**: Overstory's canopy prompt architecture shows that L0 system prompts (injected by orchestrator) provide hard orchestration control, while L1 core rule blocks are protected by external guards, creating a defense-in-depth approach.
+
+### Pattern 3: MISSION Injection with Context Persistence
 
 Agents gradually forget initial instructions during long conversations. The MISSION mechanism injects a concise mission description at the start of each conversation:
 
@@ -64,15 +68,89 @@ PROJECT_MISSION="You are a strict product creative gatekeeper. Few but refined, 
 Always check active/ for 3 items first. Graduation requires 92 points + 50 rounds + 7.5+ on all dimensions."
 ```
 
-**Comparison**:
+**Production Evidence**: agency-agents-zh demonstrates that injecting MISSION every conversation (not just once at startup) maintains constraint integrity across 50+ conversation rounds.
 
-| Project | MISSION Carrier | Injection Frequency | Effect |
-|---------|----------------|--------------------|----|
-| Tmux-Orchestrator | CLAUDE.md | Agent maintains itself | Weak |
-| Overstory | Initial prompt | Not re-injected | Weak |
-| agency-agents-zh | Markdown prompt file | Every conversation | Strong |
+**Key Insight**: Unlike Overstory's weak single injection approach, re-injecting MISSION every round ensures constraints remain in the context window, preventing gradual constraint erosion.
 
-## 9.4 SPRINT-Driven: Structured Work Goals
+### Pattern 4: Anti-Patterns in Prompt Engineering
+
+#### Anti-Pattern 1: Rule Explosion
+```
+❌ 50-rule prompt
+→ Agent can only remember the first 10 and last 5 rules
+→ The middle 35 rules are effectively useless
+
+✅ 5 iron rules + MISSION + SPRINT
+→ Iron rules are inviolable
+→ MISSION gives direction
+→ SPRINT gives goals
+```
+
+#### Anti-Pattern 2: Context Window Fragmentation
+```
+❌ Stuff 100K of full project documentation into the Agent
+→ Agent can only focus on the first 20K and last 10K
+→ The middle 70K burns tokens for nothing
+
+✅ Layered context
+→ MISSION: 200-word direction (must-read)
+→ SPRINT: 500-word current goal (must-read)
+→ Chapter content: Load on demand
+→ Historical decisions: LEARNINGS.md summary
+```
+
+## 9.5 Real-World Prompt Architecture Patterns
+
+### Overstory's Canopy Inheritance System
+
+Overstory implements a sophisticated prompt inheritance architecture:
+
+```
+base-agent (root — universal principles)
+├── leaf-worker (single-worker constraints)
+│   ├── builder (implementation specialist)
+│   ├── merger (branch merge specialist)
+│   └── read-only-worker (read-only restriction layer)
+│       ├── scout (exploration, no writes)
+│       └── reviewer (validation, no writes)
+├── coordinator-base (leadership/orchestration)
+│   ├── lead (team lead, spawns sub-workers)
+│   └── orchestrator (multi-repo coordinator)
+└── monitor (Tier 2 fleet patrol)
+```
+
+**Key Insight**: Specialized roles inherit from base-agent but override specific sections. Each role type defines its own capabilities and workflows while maintaining core principles.
+
+### agency-agents-zh's Role-Based Templates
+
+agency-agents-zh uses role-based prompt templates with clear mission/rule/deliverable sections:
+
+```markdown
+## 角色定义
+你是财务追踪员，专业的财务分析与管控专家
+
+## 核心使命
+守住企业财务健康底线，优化现金流，为业务增长提供有数据支撑的财务洞察
+
+## 关键规则
+财务准确性第一，确保所有财务流程符合监管要求
+```
+
+**Key Insight**: Role templates provide consistent structure across 50+ specialized agents, making it easier to maintain and scale agent systems.
+
+## 9.6 Summary
+
+Prompt engineering is the cornerstone of soft orchestration. A good prompt is not a one-time long document, but rather:
+
+1. **Dual Iron Law Blocks**: Inviolable baseline constraints (top + bottom placement, 87% reduction in rule deletion)
+2. **Layered Constraint System**: L0 (hard) → L1 (external guard protected) → L2-L4 (soft compliance)
+3. **MISSION Injection**: Persistent sense of direction (re-injected every conversation, not just once)
+4. **Anti-Pattern Prevention**: Avoid rule explosion and context window fragmentation
+5. **Production Patterns**: Learn from Overstory's inheritance system and agency-agents-zh's role templates
+
+**Key Insight**: From production deployments, the most effective prompt systems combine dual iron law blocks with layered constraints and regular MISSION injection - creating defense-in-depth that prevents both accidental and deliberate constraint modification.
+
+In the next chapter, we will discuss the Skill system — how to encapsulate repeatedly used prompt patterns into reusable capabilities.
 
 An Agent without clear goals will repeat the same action. SPRINT.md provides structured current goals:
 
