@@ -134,7 +134,55 @@ Skill如果不维护就会过时：
 
 这是**软编排的核心循环**：不只是按Skill执行，而是在执行中持续改进Skill。
 
-## 10.6 小结
+## 10.6 案例研究：ARIS技能系统
+
+ARIS项目（Auto-claude-code-research-in-sleep）将基于技能的方法推向了极致：
+
+> "极致轻量——零依赖、零锁定。整个系统就是纯Markdown文件。每个技能就是一个任何LLM都能读取的SKILL.md。"
+
+**核心创新**：
+
+### 自演化技能
+
+ARIS实现了`/meta-optimize`——Agent分析自身的执行日志并提出SKILL.md补丁来改进自己：
+
+```
+Agent运行技能 → 记录执行日志
+  → /meta-optimize扫描日志
+  → 识别反复出现的失败或低效
+  → 生成SKILL.md补丁
+  → 应用补丁（需人工批准）
+  → 下次执行使用改进后的技能
+```
+
+这是我们见到的**第一个真正的技能自演化实现**。大多数技能系统由人类维护；ARIS让Agent成为自己的技能维护者。
+
+### 跨Agent可移植性
+
+ARIS的技能可以在多个Agent平台上使用：
+- Claude Code（主要）
+- Codex CLI
+- Cursor
+- Trae
+- OpenClaw
+
+这得益于将技能保持为纯Markdown——没有框架特定的代码。代价是技能无法访问平台特定功能，但可移植性的收益是巨大的。
+
+### 研究Wiki：持久化知识层
+
+除了技能之外，ARIS还增加了Research Wiki——一个用于论文、想法、实验和主张的持久化知识库，带有关系图。这架起了技能（如何做事）和知识（我们学到了什么）之间的桥梁。
+
+| 层 | 用途 | 持久化方式 | ARIS实现 |
+|----|------|-----------|---------|
+| 技能 | 如何执行 | SKILL.md文件 | 62个内置技能 |
+| Wiki | 我们知道什么 | Markdown + 图 | Research Wiki |
+| 记忆 | 会话上下文 | 文件 | 多文件记忆索引 |
+
+**关键洞察**：ARIS证明了技能系统不需要框架或数据库。组织良好的纯Markdown文件就可以构成整个技能基础设施。关键因素不是技术，而是**技能编写规范**——每个技能必须有触发条件、编号步骤和坑点提醒。
+
+*参考：[wanshuiyin/Auto-claude-code-research-in-sleep](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep)*
+
+## 10.7 小结
 
 Skill系统是软编排的"可复用知识"层：
 

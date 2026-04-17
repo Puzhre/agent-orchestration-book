@@ -227,16 +227,42 @@ crash_restart() {
 
 ## 5.6 五大项目容错能力对比
 
-| 容错能力 |---------|-----------------|-------------------|----------|-----------|-----------------|
-| 进程监控 | tmux+pid | tmux | LifecycleWorker | ZFC状态机 | 无运行时 |
-| 限流处理 | 持久化+衰减+4次重启 | 无 | 无 | 无 | 无 |
-| 卡住检测 | MD5快照+早停+硬超时 | 自调度链 | 无 | 4层Watchdog | 质量门禁 |
-| AI辅助诊断 | 无 | 无 | 无 | Tier 1分诊 | 无 |
-| 会话恢复 | 无（重启） | 无（重启） | git回滚 | checkpoint+handoff | MCP rollback |
-| 崩溃保护 | 快速崩溃限速 | 无 | 无 | 渐进式nudge | 升级协议 |
-| 规则守护 | 规则守护 | CLAUDE.md约定 | 无 | constraints字段 | Prompt规则 |
-| 质量保障 | 无（信任架构师） | PM审查 | Orchestrator审查 | Reviewer角色 | 证据收集+现实检验 |
-| 双层保护 | 内置+systemd | 无 | LifecycleWorker | 4层Watchdog | 4级容错 |
+|| 容错能力 |---------|-----------------|-------------------|----------|-----------|-----------------||
+|| 进程监控 | tmux+pid | tmux | LifecycleWorker | ZFC状态机 | 无运行时 ||
+|| 限流处理 | 持久化+衰减+4次重启 | 无 | 无 | 无 | 无 ||
+|| 卡住检测 | MD5快照+早停+硬超时 | 自调度链 | 无 | 4层Watchdog | 质量门禁 ||
+|| AI辅助诊断 | 无 | 无 | 无 | Tier 1分诊 | 无 ||
+|| 会话恢复 | 无（重启） | 无（重启） | git回滚 | checkpoint+handoff | MCP rollback ||
+|| 崩溃保护 | 快速崩溃限速 | 无 | 无 | 渐进式nudge | 升级协议 ||
+|| 规则守护 | 规则守护 | CLAUDE.md约定 | 无 | constraints字段 | Prompt规则 ||
+|| 质量保障 | 无（信任架构师） | PM审查 | Orchestrator审查 | Reviewer角色 | 证据收集+现实检验 ||
+|| 双层保护 | 内置+systemd | 无 | LifecycleWorker | 4层Watchdog | 4级容错 ||
+
+### 实战中的容错模式
+
+**Tmux-Orchestrator的Git纪律作为容错：**
+- 强制每30分钟提交，防止工作成果丢失
+- 特性分支和稳定标签创建恢复点
+- 项目经理作为第一道防线执行质量标准
+- 自调度链确保Agent不会永久卡住
+
+**agency-agents-zh的多阶段QA作为容错：**
+- 七阶段流水线，配备强制质量门禁
+- 证据收集者测试每次实现
+- 现实检验者提供三层判定（READY/NEEDS WORK/NOT READY）
+- 每个任务最多3次重试，携带具体反馈
+
+**Composio的CI/CD集成作为容错：**
+- Agent自主修复CI失败
+- 基于PR的工作流提供人工监督
+- 每个Agent在独立的git worktree中工作，防止冲突
+- 仪表盘监控实时状态
+
+**Overstory的4层Watchdog系统：**
+- Tier 0：机械守护进程（日志记录、nudge唤醒）
+- Tier 1：AI分诊（分析模糊情况）
+- Tier 2：渐进式升级（warn → nudge → escalate → terminate）
+- Tier 3：带检查点恢复的会话交接
 
 ## 5.7 容错设计的核心原则
 

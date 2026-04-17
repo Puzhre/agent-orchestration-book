@@ -4,13 +4,15 @@
 
 架构是编排器的骨架。五大项目呈现了从最简单到最复杂的五种拓扑：
 
+### 拓扑一：双Agent循环
+
 ```
 ┌─────────────┐     task_dispatch.sh     ┌─────────────┐
-│  架构师Agent │ ──────────────────────→│  执行Agent   │
-│  (Hermes)   │ ←── capture-pane轮询 ──│  (Codex)    │
+│  Architect   │ ──────────────────────→│   Worker     │
+│  (Hermes)   │ ←── capture-pane poll ──│  (Codex)    │
 └──────┬──────┘                        └─────────────┘
        │
-   编排器守护进程（巡检、容错、驱动）
+   Orchestrator Daemon (patrol, fault tolerance, driving)
 ```
 
 **特点**：
@@ -39,6 +41,13 @@
 └─────┘  └─────┘
 ```
 
+**真实实现**（来自Tmux-Orchestrator研究）：
+- **自触发 (Self-Triggering)**：Agent自行安排检查时间并自主继续工作
+- **跨项目协调**：项目经理在多个代码库之间为工程师分配任务
+- **Git纪律**：强制30分钟提交一次，特性分支，有意义的提交信息
+- **括号粘贴通信 (Bracket-Paste Communication)**：通过tmux bracket-paste发送多行消息以实现干净传输
+- **状态监控**：多个Agent并行工作时的实时状态更新
+
 **特点**：
 - 在双Agent基础上增加了PM中间层
 - PM承担质量把关，Orchestrator专注于跨项目协调
@@ -51,15 +60,23 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│              七阶段流水线               │
+│              七阶段流水线                     │
 │                                              │
-│ 阶段0→阶段1→阶段2→阶段3↔阶段4→阶段5→阶段6 │
+│ Stage0→Stage1→Stage2→Stage3↔Stage4→Stage5→Stage6 │
 │ (情报) (策略) (基础) (构建) (质量) (上线) (运营)│
 │                                              │
 │ 每个阶段激活不同的智能体子集                   │
 │ 阶段间有强制质量门禁                          │
 └─────────────────────────────────────────────┘
 ```
+
+**真实实现**（来自agency-agents-zh研究）：
+- **大规模**：18个部门共211个专家Agent（165个翻译+46个中国特有）
+- **零代码编排**：纯自然语言或YAML规范
+- **DAG工作流**：自动依赖检测，独立步骤并行执行
+- **断点续跑**：失败的步骤可独立重跑，无需从头开始
+- **多工具支持**：16种AI编程工具，包括Claude Code、Gemini CLI、Copilot、Codex
+- **模板系统**：32个现成模板，覆盖开发、营销、设计、运营
 
 **特点**：
 - 不是运行时架构，而是Prompt定义的流程规范
@@ -84,6 +101,13 @@
    └───────┘ └──────┘ └──────┘
 ```
 
+**真实实现**（来自Composio研究）：
+- **CI/CD集成**：Agent自主修复CI失败、处理审查意见、开PR
+- **基于PR的工作流**：每个Agent有自己的分支和PR，通过Dashboard实现人工监督
+- **运行时无关**：支持Claude Code、Codex、Aider，后端可用tmux/Docker
+- **Tracker集成**：GitHub/Linear集成，仅在需要时升级由人工判断
+- **并行处理**：多个Agent同时处理代码库的不同部分
+
 **特点**：
 - 经典的主从模式，Orchestrator不写代码只协调
 - 每个Worker有独立的git worktree，完全隔离
@@ -106,8 +130,15 @@
 └─┬─┬─┘  └─┬─┬─┘
   │ │      │ │
  S B R    S B R          ← Scout/Builder/Reviewer
-(S=侦察 B=构建 R=审查)
 ```
+
+**真实实现**（来自Overstory研究）：
+- **SQLite邮件系统**：自定义基于SQLite的消息传递用于Agent间通信
+- **11种运行时支持**：Claude Code、Pi、Gemini CLI、Aider、Goose、Amp等
+- **分层冲突解决**：三层合并冲突处理
+- **预警系统**：针对Agent群体的全面风险分析
+- **Phase流程**：Lead按Scout→Build→Review→Merge阶段推进
+- **持久角色**：Coordinator和Supervisor跨批次存在
 
 **特点**：
 - 最复杂的拓扑，三层委托+专项角色
@@ -136,7 +167,7 @@
 | 项目 | 编排器是什么 | 优势 | 劣势 |
 |------|------------|------|------|
 | Tmux-Orchestrator | Claude Agent | 能理解复杂情况做判断 | 消耗Token、可能误判 |
-| Composio | Claude Agent(注入prompt) | Agent无关设计 | 编排质量取决于LLM |
+| Composio | Claude Agent (prompt注入) | Agent无关设计 | 编排质量取决于LLM |
 | Overstory | 混合：脚本做监控+Agent做分诊 | 兼顾可靠性和智能 | 实现复杂 |
 | agency-agents-zh | 无（纯规范） | 无实现成本 | 无执行保证 |
 
@@ -148,12 +179,54 @@
 |------|---------|------|------|
 | Tmux-Orchestrator | 文本文件 + next_check_note.txt | 极简 | 重启后丢失 |
 | Composio | YAML配置 + running-state文件 | 结构化 | 单机限制 |
-| Overstory | SQLite(WAL模式) | 并发安全、可查询 | 依赖SQLite |
+| Overstory | SQLite (WAL模式) | 并发安全、可查询 | 依赖SQLite |
 | agency-agents-zh | MCP记忆服务器 | 语义搜索、rollback | 外部依赖 |
 
-**关键洞察**：对于多Agent并发场景，SQLite(WAL)是目前最佳实践——它提供了文件系统没有的并发安全和查询能力，又不需要引入Redis/PostgreSQL这种重依赖。
+**关键洞察**：对于多Agent并发场景，SQLite (WAL) 是目前最佳实践——它提供了文件系统没有的并发安全和查询能力，又不需要引入Redis/PostgreSQL这种重依赖。
 
-## 2.3 架构演进路径
+## 2.3 新模式：基于交接的编排（OpenAI Swarm/Agents SDK）
+
+OpenAI的Swarm（现已演化为[Agents SDK](https://github.com/openai/openai-agents-python)）引入了一种不同的范式：**基于交接的编排 (Handoff-Based Orchestration)**。不是由中央编排器分发任务，而是Agent之间互相交接对话。
+
+```python
+from swarm import Swarm, Agent
+
+def transfer_to_agent_b():
+    return agent_b
+
+agent_a = Agent(
+    name="Agent A",
+    instructions="You are a helpful agent.",
+    functions=[transfer_to_agent_b],
+)
+
+agent_b = Agent(
+    name="Agent B",
+    instructions="Only speak in Haikus.",
+)
+```
+
+**关键特征**：
+- 两个原语：`Agent`（指令+工具）和**handoffs**（交接给另一个Agent）
+- 没有中央编排器——Agent自行决定何时交接
+- 调用之间无状态（对应12-Factor Agents的第12条）
+- 轻量、高度可控、易于测试
+
+**与编排器模式的对比**：
+
+| 维度 | 交接模式 (Swarm) | 编排器-Worker模式 (Composio) |
+|------|-----------------|---------------------------|
+| 控制 | 分布式（Agent自行决定） | 集中式（编排器决定） |
+| 复杂度 | 很低 | 中等 |
+| 可靠性 | 取决于Agent判断 | 确定性监控 |
+| 扩展性 | 有限（2-5个Agent） | 高（N个Worker） |
+| 最佳场景 | 客服、路由 | 并行编码、CI/CD |
+
+**关键洞察**：基于交接的编排是最纯粹的软编排——"编排"完全在Prompt中（指令告诉Agent何时交接）。没有硬编排层。这对于简单路由有效，但在需要确定性监控和恢复的长时间自主工作中会崩溃。
+
+*参考：[openai/swarm](https://github.com/openai/swarm) → [openai/openai-agents-python](https://github.com/openai/openai-agents-python)*
+
+## 2.4 架构演进路径
 
 从五大项目的经验中，我们总结出编排器架构的演进路径：
 
