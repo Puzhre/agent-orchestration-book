@@ -1,0 +1,2116 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A systematic guide to AI Agent orchestration — hard orchestration meets soft orchestration">
+      
+      
+        <meta name="author" content="Agent Orchestration Study Lab">
+      
+      
+        <link rel="canonical" href="https://puzhre.github.io/agent-orchestration-book/chapters/06-isolation/">
+      
+      
+        <link rel="prev" href="../05-fault-tolerance/">
+      
+      
+        <link rel="next" href="../07-deployment/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../../zh/chapters/06-isolation/" hreflang="zh">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>6. Isolation & Concurrency - Orchestrating Agents — From Hard Guards to Soft Constraints</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-6-isolation-and-concurrency-how-to-avoid-stepping-on-each-others-toes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Orchestrating Agents — From Hard Guards to Soft Constraints" class="md-header__button md-logo" aria-label="Orchestrating Agents — From Hard Guards to Soft Constraints" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Orchestrating Agents — From Hard Guards to Soft Constraints
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6. Isolation & Concurrency
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../zh/chapters/06-isolation/" hreflang="zh" class="md-select__link">
+              中文
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Puzhre/agent-orchestration-book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    agent-orchestration-book
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../01-introduction/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Part I Hard Orchestration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../09-prompt-engineering/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Part II Soft Orchestration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../13-antipatterns/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Part III Practice & Evolution
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../appendix/glossary/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Appendix
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Orchestrating Agents — From Hard Guards to Soft Constraints" class="md-nav__button md-logo" aria-label="Orchestrating Agents — From Hard Guards to Soft Constraints" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Orchestrating Agents — From Hard Guards to Soft Constraints
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Puzhre/agent-orchestration-book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    agent-orchestration-book
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I Hard Orchestration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I Hard Orchestration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Architecture Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-roles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Role Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-communication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Communication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-fault-tolerance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Fault Tolerance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Isolation & Concurrency
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Isolation & Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#61-three-forms-of-concurrency-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Three Forms of Concurrency Problems
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-isolation-scheme-1-git-worktree-overstory-composio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Isolation Scheme 1: Git Worktree (Overstory / Composio)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.2 Isolation Scheme 1: Git Worktree (Overstory / Composio)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overstorys-worktree-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overstory's Worktree Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composios-worktree-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composio's Worktree Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-level-merge-strategy-overstory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4-Level Merge Strategy (Overstory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-isolation-scheme-2-role-separation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Isolation Scheme 2: Role Separation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.3 Isolation Scheme 2: Role Separation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#role-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tmux-orchestrators-file-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tmux-Orchestrator's File Assignment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-isolation-scheme-3-session-isolation-all-tmux-projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Isolation Scheme 3: Session Isolation (All tmux Projects)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-isolation-scheme-4-file-locks-and-concurrency-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Isolation Scheme 4: File Locks and Concurrency Control
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.5 Isolation Scheme 4: File Locks and Concurrency Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#todomd-race-condition-composio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        todo.md Race Condition (Composio)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-wal-mode-overstory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite WAL Mode (Overstory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-concurrency-management-for-api-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Concurrency Management for API Rate Limiting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.6 Concurrency Management for API Rate Limiting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overstorys-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overstory's Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-isolation-level-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 Isolation Level Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68-core-principles-of-isolation-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 Core Principles of Isolation Design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.8 Core Principles of Isolation Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#principle-1-isolation-granularity-must-match-concurrency-needs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 1: Isolation Granularity Must Match Concurrency Needs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-2-the-cost-of-isolation-is-merging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 2: The Cost of Isolation Is Merging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-3-write-operations-are-the-root-of-conflicts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 3: Write Operations Are the Root of Conflicts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-4-api-rate-limiting-is-an-implicit-concurrency-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 4: API Rate Limiting Is an Implicit Concurrency Problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Deployment & Daemons
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-rule-guard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Rule Guard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II Soft Orchestration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II Soft Orchestration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-prompt-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Prompt Engineering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-skill-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Skill Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-knowledge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Knowledge Accumulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-pipeline-orchestration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Pipeline Orchestration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III Practice & Evolution
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III Practice & Evolution
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-antipatterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Antipatterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-hands-on/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Hands-On
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-evolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Evolution Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendix
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Appendix
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/project-index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/pattern-cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Cheatsheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#61-three-forms-of-concurrency-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Three Forms of Concurrency Problems
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-isolation-scheme-1-git-worktree-overstory-composio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Isolation Scheme 1: Git Worktree (Overstory / Composio)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.2 Isolation Scheme 1: Git Worktree (Overstory / Composio)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overstorys-worktree-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overstory's Worktree Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composios-worktree-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composio's Worktree Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-level-merge-strategy-overstory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4-Level Merge Strategy (Overstory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-isolation-scheme-2-role-separation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Isolation Scheme 2: Role Separation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.3 Isolation Scheme 2: Role Separation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#role-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tmux-orchestrators-file-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tmux-Orchestrator's File Assignment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-isolation-scheme-3-session-isolation-all-tmux-projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Isolation Scheme 3: Session Isolation (All tmux Projects)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-isolation-scheme-4-file-locks-and-concurrency-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Isolation Scheme 4: File Locks and Concurrency Control
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.5 Isolation Scheme 4: File Locks and Concurrency Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#todomd-race-condition-composio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        todo.md Race Condition (Composio)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-wal-mode-overstory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite WAL Mode (Overstory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-concurrency-management-for-api-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Concurrency Management for API Rate Limiting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.6 Concurrency Management for API Rate Limiting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overstorys-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overstory's Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-isolation-level-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 Isolation Level Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68-core-principles-of-isolation-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 Core Principles of Isolation Design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.8 Core Principles of Isolation Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#principle-1-isolation-granularity-must-match-concurrency-needs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 1: Isolation Granularity Must Match Concurrency Needs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-2-the-cost-of-isolation-is-merging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 2: The Cost of Isolation Is Merging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-3-write-operations-are-the-root-of-conflicts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 3: Write Operations Are the Root of Conflicts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-4-api-rate-limiting-is-an-implicit-concurrency-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 4: API Rate Limiting Is an Implicit Concurrency Problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="chapter-6-isolation-and-concurrency-how-to-avoid-stepping-on-each-others-toes">Chapter 6 Isolation and Concurrency: How to Avoid Stepping on Each Other's Toes<a class="headerlink" href="#chapter-6-isolation-and-concurrency-how-to-avoid-stepping-on-each-others-toes" title="Permanent link">&para;</a></h1>
+<h2 id="61-three-forms-of-concurrency-problems">6.1 Three Forms of Concurrency Problems<a class="headerlink" href="#61-three-forms-of-concurrency-problems" title="Permanent link">&para;</a></h2>
+<p>When multiple Agents work simultaneously, concurrency problems are inevitable:</p>
+<ol>
+<li><strong>Code conflicts</strong>: Two Agents modify the same file</li>
+<li><strong>Resource contention</strong>: Two Agents call the same API simultaneously and get rate-limited</li>
+<li><strong>State races</strong>: Two Agents write to the task queue at the same time</li>
+</ol>
+<h2 id="62-isolation-scheme-1-git-worktree-overstory-composio">6.2 Isolation Scheme 1: Git Worktree (Overstory / Composio)<a class="headerlink" href="#62-isolation-scheme-1-git-worktree-overstory-composio" title="Permanent link">&para;</a></h2>
+<p>This is currently the most reliable isolation scheme — each Agent works in a completely independent copy of the codebase.</p>
+<h3 id="overstorys-worktree-management">Overstory's Worktree Management<a class="headerlink" href="#overstorys-worktree-management" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Create a worktree</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nx">git</span><span class="w"> </span><span class="nx">worktree</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="o">&lt;</span><span class="nx">path</span><span class="o">&gt;</span><span class="w"> </span><span class="o">-</span><span class="nx">b</span><span class="w"> </span><span class="nx">overstory</span><span class="o">/</span><span class="p">{</span><span class="nx">agentName</span><span class="p">}</span><span class="o">/</span><span class="p">{</span><span class="nx">taskId</span><span class="p">}</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">// Branch naming convention</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nx">overstory</span><span class="o">/</span><span class="nx">scout</span><span class="o">-</span><span class="mf">1</span><span class="o">/</span><span class="nx">explore</span><span class="o">-</span><span class="nx">auth</span><span class="w">       </span><span class="c1">// Scout explores auth module</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nx">overstory</span><span class="o">/</span><span class="nx">builder</span><span class="o">-</span><span class="mf">1</span><span class="o">/</span><span class="nx">impl</span><span class="o">-</span><span class="nx">auth</span><span class="w">        </span><span class="c1">// Builder implements auth</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nx">overstory</span><span class="o">/</span><span class="nx">reviewer</span><span class="o">-</span><span class="mf">1</span><span class="o">/</span><span class="nx">review</span><span class="o">-</span><span class="nx">auth</span><span class="w">     </span><span class="c1">// Reviewer reviews auth</span>
+</code></pre></div>
+<p><strong>Worktree Manager responsibilities</strong>:
+- Create independent working directories
+- Manage branch naming conventions
+- Rollback on failure (<code>rollbackWorktree()</code>: remove + branch -D)
+- Track which worktrees belong to which Agents</p>
+<h3 id="composios-worktree-usage">Composio's Worktree Usage<a class="headerlink" href="#composios-worktree-usage" title="Permanent link">&para;</a></h3>
+<p>Also based on git worktree, but simpler — Workers code in independent worktrees, and the Orchestrator integrates results via git merge.</p>
+<h3 id="4-level-merge-strategy-overstory">4-Level Merge Strategy (Overstory)<a class="headerlink" href="#4-level-merge-strategy-overstory" title="Permanent link">&para;</a></h3>
+<p>When multiple Agents complete their respective tasks, code needs to be merged. Overstory designed a 4-level merge strategy:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Level 1: clean-merge    — No conflicts, merge directly
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Level 2: auto-resolve   — Automatically resolve simple conflicts (e.g., import ordering)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Level 3: ai-resolve     — AI-assisted conflict resolution (leveraging historical patterns)
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Level 4: reimagine      — AI re-imagines the entire file
+</code></pre></div>
+<p><strong>Key innovation</strong>: The Level 3 AI conflict resolver queries the Mulch knowledge base for historical conflict patterns, predicts which files are prone to conflicts, and skips strategies with historically high failure rates.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Merger executes after receiving merge_ready mail</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">merge</span><span class="p">(</span><span class="nx">mergeRequest</span><span class="o">:</span><span class="w"> </span><span class="kt">MergeReadyPayload</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">selectStrategy</span><span class="p">(</span><span class="nx">conflictAnalysis</span><span class="p">,</span><span class="w"> </span><span class="nx">historicalPatterns</span><span class="p">);</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="c1">// Level 1-2: Automatic handling</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="c1">// Level 3: Call AI to analyze conflicts</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="c1">// Level 4: Regenerate file</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">success</span><span class="p">)</span><span class="w"> </span><span class="nx">mail</span><span class="p">.</span><span class="nx">send</span><span class="p">({</span><span class="w"> </span><span class="nx">protocol</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;merged&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">});</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="nx">mail</span><span class="p">.</span><span class="nx">send</span><span class="p">({</span><span class="w"> </span><span class="nx">protocol</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;merge_failed&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">});</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Advantages</strong>:
+- Complete isolation — Agents cannot see each other's modifications
+- Systematic handling for merge conflicts
+- Clear branch naming conventions, traceable</p>
+<p><strong>Disadvantages</strong>:
+- Merge cost — Every merge may have conflicts
+- Storage cost — Each worktree is a complete copy of the codebase
+- Latency — Must wait for all related Agents to complete before merging</p>
+<h2 id="63-isolation-scheme-2-role-separation">6.3 Isolation Scheme 2: Role Separation<a class="headerlink" href="#63-isolation-scheme-2-role-separation" title="Permanent link">&para;</a></h2>
+<p>Rather than code-level isolation, conflicts are avoided through role separation — "you handle the backend, I'll handle the frontend."</p>
+<h3 id="role-isolation">Role Isolation<a class="headerlink" href="#role-isolation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Architect: Only manages SPRINT.md and FEATURES.md, never touches code
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Executor: Only handles code implementation, does not manage project planning
+</code></pre></div>
+<p>The Architect's iron rule explicitly prohibits writing code, and the Executor can only receive tasks from the Architect. This "write/read separation" naturally avoids conflicts — because the sets of files operated on by the two Agents are completely non-overlapping.</p>
+<h3 id="tmux-orchestrators-file-assignment">Tmux-Orchestrator's File Assignment<a class="headerlink" href="#tmux-orchestrators-file-assignment" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>PM explicitly specifies when assigning tasks:
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  &quot;Engineer-1: You are responsible for the src/auth/ directory&quot;
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  &quot;Engineer-2: You are responsible for the src/api/ directory&quot;
+</code></pre></div>
+<p><strong>Advantages</strong>:
+- Zero isolation cost — No additional worktrees or branches needed
+- Simple — No merge strategy needed</p>
+<p><strong>Disadvantages</strong>:
+- Depends on the PM/Architect's assignment wisdom — If poorly assigned, conflicts are inevitable
+- Not suitable for scenarios with inter-task dependencies (e.g., one Agent's output is another's input)
+- Difficult to scale to 3+ coding Agents</p>
+<h2 id="64-isolation-scheme-3-session-isolation-all-tmux-projects">6.4 Isolation Scheme 3: Session Isolation (All tmux Projects)<a class="headerlink" href="#64-isolation-scheme-3-session-isolation-all-tmux-projects" title="Permanent link">&para;</a></h2>
+<p>Each Agent runs in an independent tmux session/window, providing process-level isolation.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>tmux session: project-name
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  ├── window 0: Claude-Agent (Architect)
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  ├── window 1: Shell
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  ├── window 2: Dev-Server
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  └── window 3: Codex (Executor)
+</code></pre></div>
+<p>This is the most basic isolation — Agents won't accidentally interfere with each other's terminals. But it doesn't provide file-level protection.</p>
+<p><strong>safe_session()</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># All tmux commands wrapped with timeout 10</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>safe_session<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>timeout<span class="w"> </span><span class="m">10</span><span class="w"> </span>tmux<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="o">}</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># Prevents a single tmux operation from blocking the main loop</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1"># If a session&#39;s tmux operation hangs, it times out after 10 seconds, not affecting other sessions</span>
+</code></pre></div>
+<h2 id="65-isolation-scheme-4-file-locks-and-concurrency-control">6.5 Isolation Scheme 4: File Locks and Concurrency Control<a class="headerlink" href="#65-isolation-scheme-4-file-locks-and-concurrency-control" title="Permanent link">&para;</a></h2>
+<p>SPRINT.md is accessed simultaneously by the Architect (updating task status) and the Orchestrator (possibly reading status). In a single-Agent scenario this is fine, but scaling to multiple Agents would cause conflicts.</p>
+<p><strong>Potential solution</strong> (not yet implemented):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Implement file locks with flock</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="o">(</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>flock<span class="w"> </span>-x<span class="w"> </span><span class="m">200</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="c1"># Read/write SPRINT.md</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="o">)</span><span class="w"> </span><span class="m">200</span>&gt;/tmp/sprint.lock
+</code></pre></div></p>
+<h3 id="todomd-race-condition-composio">todo.md Race Condition (Composio)<a class="headerlink" href="#todomd-race-condition-composio" title="Permanent link">&para;</a></h3>
+<p>Multiple Workers updating todo.md simultaneously may overwrite each other's updates. Composio does not explicitly handle this problem, relying on the convention that "Workers only update their own line."</p>
+<h3 id="sqlite-wal-mode-overstory">SQLite WAL Mode (Overstory)<a class="headerlink" href="#sqlite-wal-mode-overstory" title="Permanent link">&para;</a></h3>
+<p>Overstory uses SQLite (WAL) to solve concurrent read/write problems:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>WAL (Write-Ahead Logging) mode:
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>- Read operations do not block write operations
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>- Write operations are serialized (single writer)
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>- Multiple read operations can run concurrently
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>- Suitable for &quot;many reads, few writes&quot; Agent communication scenarios
+</code></pre></div>
+<h2 id="66-concurrency-management-for-api-rate-limiting">6.6 Concurrency Management for API Rate Limiting<a class="headerlink" href="#66-concurrency-management-for-api-rate-limiting" title="Permanent link">&para;</a></h2>
+<p>When multiple Agents call the same API simultaneously (e.g., Claude API), it's easy to trigger 429 rate limiting.</p>
+<h3 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>1. Detect 429 → Enter cooldown (300s)
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>2. Orchestrator skips nudges during cooldown to avoid avalanche
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>3. Cooldown expires → Notify Architect to resume
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>4. Force restart after 4 renewals
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>5. Persist state to disk
+</code></pre></div>
+<h3 id="overstorys-solution">Overstory's Solution<a class="headerlink" href="#overstorys-solution" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Watchdog detects Agent unresponsive → nudge → escalate → AI triage
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Rate limiting is not handled as a special case, but as one type of &quot;stuck&quot;
+</code></pre></div>
+<p><strong>Key insight</strong>: Rate limiting handling is more refined because a large number of 429 scenarios were encountered in practice. Overstory's general Watchdog approach is more elegant but may not respond as quickly as a dedicated solution.</p>
+<h2 id="67-isolation-level-comparison">6.7 Isolation Level Comparison<a class="headerlink" href="#67-isolation-level-comparison" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Isolation Level</th>
+<th>Scheme</th>
+<th>Conflict Probability</th>
+<th>Implementation Cost</th>
+<th>Applicable Agent Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Level 0</td>
+<td>No isolation (agency-agents-zh)</td>
+<td>High</td>
+<td>Zero</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Level 1</td>
+<td>Session isolation</td>
+<td>Medium</td>
+<td>Low</td>
+<td>2-3</td>
+</tr>
+<tr>
+<td>Level 2</td>
+<td>Role separation</td>
+<td>Low</td>
+<td>Low</td>
+<td>2-3</td>
+</tr>
+<tr>
+<td>Level 3</td>
+<td>File assignment</td>
+<td>Low</td>
+<td>Medium</td>
+<td>3-5</td>
+</tr>
+<tr>
+<td>Level 4</td>
+<td>Git worktree</td>
+<td>Very low</td>
+<td>High</td>
+<td>5+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="68-core-principles-of-isolation-design">6.8 Core Principles of Isolation Design<a class="headerlink" href="#68-core-principles-of-isolation-design" title="Permanent link">&para;</a></h2>
+<h3 id="principle-1-isolation-granularity-must-match-concurrency-needs">Principle 1: Isolation Granularity Must Match Concurrency Needs<a class="headerlink" href="#principle-1-isolation-granularity-must-match-concurrency-needs" title="Permanent link">&para;</a></h3>
+<p>2 Agents only need role separation, 5 Agents need file assignment, 10 Agents must use git worktree. Don't over-engineer, and don't under-engineer.</p>
+<h3 id="principle-2-the-cost-of-isolation-is-merging">Principle 2: The Cost of Isolation Is Merging<a class="headerlink" href="#principle-2-the-cost-of-isolation-is-merging" title="Permanent link">&para;</a></h3>
+<p>Git worktree provides the strongest isolation, but also introduces merge costs. Merge strategies (4-level merge) and conflict resolution (AI-assisted) are necessary complements to worktree isolation.</p>
+<h3 id="principle-3-write-operations-are-the-root-of-conflicts">Principle 3: Write Operations Are the Root of Conflicts<a class="headerlink" href="#principle-3-write-operations-are-the-root-of-conflicts" title="Permanent link">&para;</a></h3>
+<p>Read-only Agents (Scout, Reviewer) don't need isolation — they don't modify files. Concentrating write operations in the fewest roles is an effective strategy for reducing isolation costs.</p>
+<h3 id="principle-4-api-rate-limiting-is-an-implicit-concurrency-problem">Principle 4: API Rate Limiting Is an Implicit Concurrency Problem<a class="headerlink" href="#principle-4-api-rate-limiting-is-an-implicit-concurrency-problem" title="Permanent link">&para;</a></h3>
+<p>Unlike file conflicts which are obvious, 429 rate limiting is equally serious in multi-Agent scenarios. Rate limiting state must be persisted, and all requests must be paused during cooldown.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

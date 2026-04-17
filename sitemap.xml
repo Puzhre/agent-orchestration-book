@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/appendix/glossary/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/appendix/glossary/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/appendix/glossary/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/appendix/pattern-cheatsheet/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/appendix/pattern-cheatsheet/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/appendix/pattern-cheatsheet/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/appendix/project-index/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/appendix/project-index/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/appendix/project-index/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/appendix/resources/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/appendix/resources/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/appendix/resources/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/01-introduction/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/01-introduction/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/01-introduction/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/02-architecture/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/02-architecture/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/02-architecture/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/03-roles/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/03-roles/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/03-roles/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/04-communication/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/04-communication/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/04-communication/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/05-fault-tolerance/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/05-fault-tolerance/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/05-fault-tolerance/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/06-isolation/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/06-isolation/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/06-isolation/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/07-deployment/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/07-deployment/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/07-deployment/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/08-rule-guard/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/08-rule-guard/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/08-rule-guard/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/09-prompt-engineering/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/09-prompt-engineering/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/09-prompt-engineering/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/10-skill-system/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/10-skill-system/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/10-skill-system/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/11-knowledge/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/11-knowledge/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/11-knowledge/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/12-pipeline-orchestration/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/12-pipeline-orchestration/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/12-pipeline-orchestration/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/13-antipatterns/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/13-antipatterns/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/13-antipatterns/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/14-hands-on/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/14-hands-on/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/14-hands-on/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/chapters/15-evolution/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/15-evolution/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/15-evolution/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/appendix/glossary/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/appendix/glossary/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/appendix/glossary/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/appendix/pattern-cheatsheet/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/appendix/pattern-cheatsheet/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/appendix/pattern-cheatsheet/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/appendix/project-index/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/appendix/project-index/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/appendix/project-index/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/appendix/resources/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/appendix/resources/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/appendix/resources/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/01-introduction/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/01-introduction/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/01-introduction/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/02-architecture/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/02-architecture/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/02-architecture/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/03-roles/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/03-roles/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/03-roles/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/04-communication/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/04-communication/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/04-communication/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/05-fault-tolerance/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/05-fault-tolerance/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/05-fault-tolerance/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/06-isolation/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/06-isolation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/06-isolation/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/07-deployment/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/07-deployment/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/07-deployment/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/08-rule-guard/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/08-rule-guard/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/08-rule-guard/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/09-prompt-engineering/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/09-prompt-engineering/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/09-prompt-engineering/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/10-skill-system/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/10-skill-system/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/10-skill-system/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/11-knowledge/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/11-knowledge/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/11-knowledge/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/12-pipeline-orchestration/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/12-pipeline-orchestration/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/12-pipeline-orchestration/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/13-antipatterns/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/13-antipatterns/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/13-antipatterns/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/14-hands-on/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/14-hands-on/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/14-hands-on/"/>
+    </url>
+    <url>
+        <loc>https://puzhre.github.io/agent-orchestration-book/zh/chapters/15-evolution/</loc>
+        <lastmod>2026-04-17</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://puzhre.github.io/agent-orchestration-book/zh/chapters/15-evolution/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://puzhre.github.io/agent-orchestration-book/chapters/15-evolution/"/>
+    </url>
+</urlset>
