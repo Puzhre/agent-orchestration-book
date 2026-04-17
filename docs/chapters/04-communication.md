@@ -294,42 +294,85 @@ type MailProtocolType =
   | "decision_gate"  // Agent → Human: human-machine decision gate
 ```
 
-**Core Components:**
-- **SQLite WAL Mode**: Ensures concurrent access safety
-- **Hook Injection**: Automatically injects messages via UserPromptSubmit hook
-- **Group Addresses**: `@all`, `@builders`, `@scouts` auto-resolve to agent lists
-- **Threaded Conversations**: Maintain conversation context across messages
-
 ### Detailed Comparison Matrix
 
-| Dimension | Group Handoff | SQLite Mail |
-|------|----------|-----------|
-| **Primary Use Case** | Human-AI collaborative workflow | Machine-to-machine coordination |
-| **Context Passing** | Tag-based semantic search | Structured protocols with payloads |
-| **Error Recovery** | Rollback to checkpoint | Retry with escalation path |
-| **Scalability** | Limited by human handoff capacity | High (automatic protocol routing) |
-| **Real-time Performance** | Medium (depends on human speed) | High (1-5ms mail operations) |
-| **Complexity Management** | Templates reduce cognitive load | Type system prevents ambiguity |
-| **Multi-Agent Orchestration** | Human coordination | Automatic hierarchical scheduling |
-| **Fault Handling** | Requires human intervention | Automated escalation workflows |
+|| Dimension | Swarm Handoff | SQLite Mail |
+||------|----------|-----------|
+|| **Primary Use Case** | Session persistence and recovery | Real-time inter-agent coordination |
+|| **Data Flow** | State persistence across sessions | Message passing within sessions |
+|| **Timing** | Session boundaries (start/end) | Real-time (immediate delivery) |
+|| **Persistence** | File-based checkpointing | SQLite database with WAL mode |
+|| **Recovery** | Resume from any session break | Message retry and escalation |
+|| **Granularity** | Complete session state | Individual messages and threads |
+|| **Concurrency** | Single session at a time | Multiple concurrent messages |
+|| **Integration** | Git worktree integration | Hook-based injection |
 
 ### When to Choose Which
 
-#### Choose Group Handoff when:
-- Human oversight is needed in the workflow
-- Context passing requires semantic understanding
-- Project involves creative decisions
-- Team size is small (< 10 agents)
-- Quality control requires human judgment
-- Rollback capability is needed for iterative work
+#### Choose Swarm Handoff when:
+- Long-running tasks that span multiple sessions
+- Work continuity is critical (crash recovery)
+- Stateful work with file modifications
+- Expertise domain persistence is needed
+- Session handoff debugging is required
+- Git branch state must be preserved
 
 #### Choose SQLite Mail when:
-- Fully automated multi-agent coordination is needed
-- Structured protocols are needed for reliability
-- Large-scale deployment (> 10 agents)
-- Machine-to-machine communication dominates
-- Real-time coordination is critical
-- Hierarchical organization is needed
+- Real-time coordination between active agents
+- Hierarchical task dispatch and reporting
+- Event-driven workflows (escalations, health checks)
+- Cross-agent communication within a session
+- Message threading and conversation context
+- High-frequency coordination needs
+
+### Implementation Patterns
+
+#### Swarm Handoff Implementation
+```typescript
+// Session checkpointing workflow
+const checkpoint: SessionCheckpoint = {
+  agentName: "lead-1",
+  taskId: "auth-001",
+  sessionId: "session-123",
+  timestamp: new Date().toISOString(),
+  progressSummary: "Implemented user authentication module",
+  filesModified: ["src/auth/index.ts", "tests/auth.test.ts"],
+  currentBranch: "feature/auth",
+  pendingWork: "Add OAuth integration",
+  mulchDomains: ["backend", "security"]
+};
+
+// Save and resume
+await saveCheckpoint(agentsDir, checkpoint);
+const resumeData = await resumeFromHandoff({ agentsDir, agentName: "lead-1" });
+```
+
+#### SQLite Mail Implementation
+```typescript
+// Send task dispatch
+mail.send({
+  from: "coordinator",
+  to: "lead-1", 
+  subject: "Implement user authentication",
+  type: "dispatch",
+  priority: "high",
+  payload: {
+    taskId: "auth-001",
+    specPath: "specs/auth-spec.md",
+    capability: "backend",
+    fileScope: ["src/auth/", "tests/auth/"]
+  }
+});
+
+// Receive and process
+const messages = mail.check("lead-1");
+for (const msg of messages) {
+  if (msg.type === "dispatch") {
+    const payload = parsePayload(msg, "dispatch");
+    // Process task dispatch
+  }
+}
+```
 
 ### Implementation Patterns
 
