@@ -189,3 +189,22 @@ This book is organized into three parts:
 - **Ch13**: Antipatterns—Pitfalls across hard and soft
 - **Ch14**: Hands-On—Build a minimal orchestrator from scratch
 - **Ch15**: Evolution Roadmap—From scripts to autonomous systems
+
+## 1.6 Source Projects and Licensing
+
+This book analyzes the following open-source projects. All are used under their respective licenses with proper attribution:
+
+| Project | Author | License | Repository |
+|---------|--------|---------|-----------|
+| Tmux-Orchestrator | Jedward23 | MIT | [GitHub](https://github.com/Jedward23/Tmux-Orchestrator) |
+| agency-agents-zh | jnMetaCode (translation), Michael Sitarzewski (original) | MIT | [GitHub](https://github.com/jnMetaCode/agency-agents-zh) |
+| Composio agent-orchestrator | Composio, Inc. | MIT | [GitHub](https://github.com/ComposioHQ/agent-orchestrator) |
+| Overstory | Jaymin West | MIT | [GitHub](https://github.com/jayminwest/overstory) |
+
+**How this book uses source material**:
+
+- **Architecture descriptions and design patterns**: Summarized and reinterpreted from project documentation and source code. These are ideas, not copyrighted expression.
+- **Code examples in chapters**: Unless explicitly marked as "adapted from [project]", all code blocks are **illustrative pseudocode** written for this book to demonstrate concepts. They are not verbatim copies of project source code.
+- **Verbatim quotes**: When exact text is quoted from a project's README, CLAUDE.md, or documentation, it is clearly attributed in the surrounding text.
+
+This book itself is licensed under [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).

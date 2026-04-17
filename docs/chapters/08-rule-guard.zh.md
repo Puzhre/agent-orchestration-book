@@ -163,7 +163,7 @@ rule_integrity_check() {
 
 ## 8.7 超越Bash：Overstory的Guard-Rules系统
 
-Overstory通过结构化的`guard-rules/`目录将规则执行推进一步，其中包含每个Agent的约束文件：
+Overstory通过结构化的guard常量和按agent生成的hook来进一步加强规则执行。在Overstory中，`src/agents/guard-rules.ts`定义了工具白名单和黑名单，而`hooks-deployer.ts`生成按agent定制的PreToolUse guard。其概念模型可以泛化为结构化的`guard-rules/`目录，包含按agent划分的约束文件：
 
 ```
 guard-rules/
@@ -195,7 +195,7 @@ guard-rules/
 
 ### 通过AgentRuntime执行
 
-关键架构洞察：guard-rules在运行时适配器层面执行，而非在Prompt层面：
+关键架构洞察：guard-rules在运行时适配器层面执行，而非在Prompt层面。以下代码阐释此概念（并非Overstory的实际实现，其使用hooks-deployer生成的guard）：
 
 ```typescript
 // 在每个Agent动作之前，运行时检查约束

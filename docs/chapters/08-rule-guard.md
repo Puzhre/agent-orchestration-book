@@ -163,7 +163,7 @@ Iron laws + guard scripts, soft and hard combined, form a complete constraint sy
 
 ## 8.7 Beyond Bash: Overstory's Guard-Rules System
 
-Overstory takes rule enforcement further with a structured `guard-rules/` directory containing per-agent constraint files:
+Overstory takes rule enforcement further with structured guard constants and per-agent hook generation. In Overstory, `src/agents/guard-rules.ts` defines tool allowlists and blocklists, while `hooks-deployer.ts` generates agent-specific PreToolUse guards. The conceptual model can be generalized as a structured `guard-rules/` directory containing per-agent constraint files:
 
 ```
 guard-rules/
@@ -195,7 +195,7 @@ guard-rules/
 
 ### Enforcement via AgentRuntime
 
-The key architectural insight is that guard-rules are enforced at the runtime adapter level, not at the prompt level:
+The key architectural insight is that guard-rules are enforced at the runtime adapter level, not at the prompt level. The following illustrates this concept (not Overstory's actual implementation, which uses hooks-deployer generated guards):
 
 ```typescript
 // Before every agent action, the runtime checks constraints
