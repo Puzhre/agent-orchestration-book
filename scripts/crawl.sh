@@ -134,7 +134,7 @@ crawl_hn() {
     result_file="$HN_DIR/${safe_query}.json"
     
     if [[ -f "$result_file" ]]; then
-      age=$(( ( $(date +%s) - $(stat -c %Y "$result_file") ) / 86400 ))
+      age=$(( ( $(date +%s) - $(stat -c %Y "$result_file" 2>/dev/null || echo 0) ) / 86400 ))
       if [[ $age -lt $MAX_CACHE_DAYS ]]; then
         log "  SKIP hn:$query (cached)"
         continue
