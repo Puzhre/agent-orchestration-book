@@ -1,6 +1,6 @@
 # 第七章 配置与部署：怎么跑起来
 
-## 8.1 部署模型的选择
+## 7.1 部署模型的选择
 
 五大项目代表了三种部署模型：
 
@@ -10,7 +10,7 @@
 | CLI工具 | Composio、Overstory | 按需启动的命令行工具 |
 | 纯规范 | agency-agents-zh | 无运行时，只是Prompt定义 |
 
-## 8.2 守护进程模型
+## 7.2 守护进程模型
 
 ### systemd方案
 
@@ -74,7 +74,7 @@ RATE_LIMIT_COOLDOWN=300
 5. 运行调度测试：./schedule_with_note.sh 1 "Test schedule"
 ```
 
-## 8.3 CLI工具模型
+## 7.3 CLI工具模型
 
 ### Composio的ao命令
 
@@ -181,7 +181,7 @@ runtime:
     scout: claude
 ```
 
-## 8.4 纯规范模型
+## 7.4 纯规范模型
 
 ### agency-agents-zh的安装脚本
 
@@ -206,7 +206,7 @@ runtime:
 | Windsurf | 项目根目录 | .windsurfrules |
 | AgentPlatform | ~/.agentplatform/agency-agents/ | SOUL.md |
 
-## 8.5 Agent运行时检测
+## 7.5 Agent运行时检测
 
 Composio和Overstory都实现了自动检测系统已安装的Agent运行时：
 
@@ -250,7 +250,7 @@ interface AgentRuntime {
 
 **关键洞察**：运行时适配器是编排器"Agent无关"设计的基础。没有它，每换一个Agent就要改编排器代码。
 
-## 8.6 会话管理策略
+## 7.6 会话管理策略
 
 | 策略 | 使用项目 | 优势 | 劣势 |
 |------|---------|------|------|
@@ -265,7 +265,7 @@ type SessionStrategy = "terminal" | "vscode" | "tmux";
 // 推荐 tmux 用于多Agent并行
 ```
 
-## 8.7 可视化与可观测性
+## 7.7 可视化与可观测性
 
 ### Composio Dashboard
 
@@ -284,7 +284,7 @@ type EventType =
   | "progress" | "result";
 ```
 
-## 8.8 部署设计的核心原则
+## 7.8 部署设计的核心原则
 
 ### 原则一：一键启动是必须的
 

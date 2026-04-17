@@ -1,8 +1,8 @@
-# 第十二章 流水线编排：从假设到论文
+# 第十二章 流水线编排：从任务分发到交付
 
-> 当任务复杂到单个Skill无法覆盖时，需要把多个步骤串联成流水线。流水线是软编排的"生产流水线"——每一步有明确的输入、输出和质量门禁。
+> 当任务复杂到单个Skill无法覆盖时，需要把多个步骤串联成流水线。流水线是软编排的"生产流水线"——每一步有明确的输入、输出和质量门控 (Quality Gate)。
 
-## 11.1 为什么需要流水线
+## 12.1 为什么需要流水线
 
 单个Agent的能力有限，但把任务拆成多步，每步由专门的Agent/Skill负责：
 
@@ -10,67 +10,124 @@
 ❌ 一个Agent从头做到尾
 → 上下文爆炸、质量不可控、无法并行
 
-✅ 流水线：每步专职、有门禁、可回退
+✅ 流水线：每步专职、有门控、可回退
 → 上下文隔离、质量分层、可追溯
 ```
 
-## 11.2 案例：AI Scientist流水线
+## 12.2 案例：AI Scientist流水线
 
 AI Scientist是学术研究的自动化流水线：
 
 ```
 Ideation → Experiment → Paper Writing → Peer Review
    ↓           ↓             ↓              ↓
-  假设       代码实现       论文草稿       评审反馈
+ 假设       代码实现       论文草稿       评审反馈
    ↓           ↓             ↓              ↓
  质量门1    质量门2       质量门3       质量门4
 ```
 
 每一步都有：
 - **输入规范**：上一步的输出格式
-- **质量门禁**：不达标就回退
+- **质量门控 (Quality Gate)**：不达标就回退
 - **独立执行**：每步用不同的Prompt/Skill
 
-## 11.3 案例：七阶段流水线流水线
+## 12.3 案例：七阶段流水线
 
 agency-agents-zh的多阶段流水线更复杂：
 
 ```
-1. 侦察(Recon) → 2. 规划(Plan) → 3. 评审(Review)
-     ↓                ↓                ↓
-  质量门禁1        质量门禁2        质量门禁3
-     ↓                ↓                ↓
-4. 构建(Build) → 5. 测试(Test) → 6. 部署(Deploy) → 7. 监控(Monitor)
+1. Recon → 2. Plan → 3. Review
+     ↓          ↓          ↓
+ 质量门1    质量门2    质量门3
+     ↓          ↓          ↓
+4. Build → 5. Test → 6. Deploy → 7. Monitor
 ```
 
 每个阶段有标准化的：
 - 交接模板（Markdown格式）
-- 质量门禁（评分制）
+- 质量门控（评分制）
 - 升级协议（3次失败→升级）
 
-## 11.4 案例：轻量级科研流水线
+## 12.4 案例：轻量级科研流水线
 
 一个五步科研流水线的精简设计：
 
 ```
-假设 → 理论 → 仿真 → 分析 → 论文
- ↓      ↓      ↓      ↓      ↓
-人为   AI辅助  人工拍板  AI辅助  AI辅助
+Hypothesis → Theory → Simulation → Analysis → Paper
+    ↓          ↓         ↓          ↓         ↓
+ 人为      AI辅助     人工拍板     AI辅助     AI辅助
 ```
 
 **核心理念**：不信任全自动，要分步可控，每步AI辅助+人工拍板。
 
-## 11.5 流水线设计模式
+## 12.5 Overstory的任务分发流水线
 
-### 模式一：线性流水线
+Overstory实现了生产级的分发流水线，以 `ov sling` 命令作为入口：
+
+### 基于能力的分发 (Capability-Based Dispatch)
+
+```typescript
+// Dispatch by capability, not by agent name
+ov sling --capability builder --task "Implement user authentication"
+ov sling --capability scout --task "Research auth libraries"
+
+// The coordinator resolves capability → agent mapping via manifest
+interface AgentManifest {
+  name: string;
+  capabilities: string[];    // ["builder", "backend", "auth"]
+  model: string;             // "claude-sonnet-4"
+  maxConcurrentTasks: number;
+  worktree: string;
+}
+```
+
+**关键洞察**：按能力而非Agent名称分发，将任务分配与Agent身份解耦。这意味着你可以替换Agent，而无需修改分发逻辑。
+
+### 完整分发生命周期 (Full Dispatch Lifecycle)
+
+```
+ov sling → Coordinator receives dispatch
+  → Check agent manifest for matching capability
+  → Select least-busy agent (maxConcurrentTasks)
+  → Create worktree branch: overstory/{agent}/{task}
+  → Send dispatch mail to agent
+  → Agent starts work in worktree
+  → Watchdog monitors progress (tiered)
+  → Agent completes → sends worker_done mail
+  → Merger receives merge_ready mail
+  → 4-level merge strategy
+  → Merge complete → merged mail sent
+  → Or merge_failed → agent reworks
+```
+
+### 分层看门狗监控 (Tiered Watchdog Monitoring)
+
+```
+Tier 0 (Bash timer):
+  → Every 60 seconds: check agent heartbeat
+  → After 120s of inactivity: send nudge
+  → After 300s: escalate to Tier 1
+
+Tier 1 (AI triage):
+  → Launch lightweight model (claude-haiku)
+  → Analyze agent's recent output
+  → Determine: stuck? waiting? making progress?
+  → Decide: nudge content, restart, or escalate to human
+```
+
+这种两层方法避免了一个常见的陷阱：要么过度监控（浪费资源），要么监控不足（遗漏真实问题）。
+
+## 12.6 流水线设计模式
+
+### 模式一：线性流水线 (Linear Pipeline)
 
 ```
 A → B → C → D
 ```
 
-最简单，每步依赖上一步。适用于因果关系明确的任务。
+最简单的形式，每步依赖上一步。适用于因果关系明确的任务。
 
-### 模式二：分支流水线
+### 模式二：分支流水线 (Branching Pipeline)
 
 ```
 A → B → C1 → D
@@ -79,47 +136,114 @@ A → B → C1 → D
 
 步骤C可以并行执行不同方案，D汇总结果。
 
-### 模式三：迭代流水线
+### 模式三：迭代流水线 (Iterative Pipeline)
 
 ```
-A → B → C → (质量检查)
-              ↓ 不达标
-              → B (回退重做)
-              ↓ 达标
+A → B → C → (Quality Check)
+              ↓ Not passed
+              → B (rollback and redo)
+              ↓ Passed
               → D
 ```
 
-加入质量门禁和回退机制。
+加入质量门控和回退机制。
 
-### 模式四：自适应流水线
+### 模式四：自适应流水线 (Adaptive Pipeline)
 
 ```
-A → 路由器 → B1 (简单任务)
-           → B2 (复杂任务)
-           → B3 (研究任务)
+A → Router → B1 (Simple task)
+           → B2 (Complex task)
+           → B3 (Research task)
 ```
 
 根据任务特征动态选择执行路径。
 
-## 11.6 质量门禁设计
+### 模式五：扇出/扇入流水线 (Fan-Out/Fan-In Pipeline)
 
-质量门禁是流水线的核心——没有门禁的流水线只是串行执行：
+```
+           → Scout-1 (explore auth) →
+Coordinator → Scout-2 (explore db)   → Builder (implement chosen approach)
+           → Scout-3 (explore api)  →
+```
 
-| 门禁类型 | 判定方式 | 回退策略 |
+Overstory在其侦察-发现-构建循环中使用了这种模式。多个侦察者并行探索，然后构建者实现找到的最佳方案。这是分支模式的一种特化，其中并行分支服务于侦察目的。
+
+## 12.7 质量门控设计
+
+质量门控是流水线的核心——没有门控的流水线只是串行执行：
+
+| 门控类型 | 判定方式 | 回退策略 |
 |---------|---------|---------|
 | 自动化检查 | 测试通过/失败 | 自动回退到上一步 |
 | AI评审 | 评分≥阈值 | AI建议修改点 |
 | 人工确认 | 人批准/拒绝 | 等待人工决策 |
 | 混合 | 自动检查+AI评审+人工确认 | 分级回退 |
 
-## 11.7 小结
+### Overstory的质量门控实现
+
+```yaml
+# overstory.yaml
+project:
+  qualityGates: [tests-pass, lint-clean, type-check]
+
+# At merge time, all gates must pass before code reaches canonical branch
+```
+
+Merger Agent不仅合并代码——它还强制执行质量门控。如果测试失败，合并会被拒绝，并向工作者发送 `merge_failed` 邮件，要求返工。
+
+### agency-agents-zh阶段门控
+
+```markdown
+# Stage Gate Template
+## Stage: [N] — [Name]
+### Entry Criteria
+- [ ] Previous stage deliverables received
+- [ ] Quality score ≥ 7/10
+### Exit Criteria
+- [ ] All deliverables produced
+- [ ] QA passed with no P0 issues
+- [ ] Handoff document completed
+```
+
+## 12.8 合并作为流水线阶段
+
+在多Agent系统中，合并不是事后才考虑的事情——它是一个有自己的质量门控和失败处理机制的流水线阶段。
+
+### Overstory的四级合并策略
+
+```
+Level 1: clean-merge    — No conflicts, merge directly (automated)
+Level 2: auto-resolve   — Automatically resolve simple conflicts
+                            (import ordering, trailing whitespace)
+Level 3: ai-resolve     — AI-assisted conflict resolution
+                            (query Mulch for historical patterns)
+Level 4: reimagine      — AI re-imagines the entire file
+                            (nuclear option, rarely needed)
+```
+
+### 邮件驱动的合并协议 (Mail-Driven Merge Protocol)
+
+```
+Worker completes task
+  → Sends worker_done mail to Supervisor
+  → Supervisor sends merge_ready mail to Merger
+  → Merger attempts merge (4-level strategy)
+  → Success: sends merged mail → worktree cleaned up
+  → Failure: sends merge_failed mail → Worker reworks
+```
+
+这是流水线中的流水线——合并步骤本身也有阶段、质量检查和回退能力。
+
+## 12.9 小结
 
 流水线编排是软编排的"生产系统"：
 
 1. **拆分**：把复杂任务拆成独立步骤
 2. **专职**：每步有专门的Agent/Skill
-3. **门禁**：每步有质量检查
+3. **门控**：每步有质量检查
 4. **回退**：不达标时回到上一步重做
 5. **迭代**：整个流水线可以多轮循环
+6. **合并**：在多Agent系统中，合并是带有自身门控的流水线阶段
+7. **监控**：分层看门狗确保流水线健康，避免过度监控
 
 下一章讨论反模式——那些必须避开的坑。

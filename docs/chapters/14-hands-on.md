@@ -167,7 +167,94 @@ The evolution path from 30 to hundreds of lines is clear:
 5. **Add constraints**: Rule guards, cooldowns, crash protection
 6. **Continuous iteration**: Every new problem is a seed for new features
 
-## 14.8 Next Steps
+## 14.8 Pattern: Playbook-Driven Orchestration
+
+Beyond the script-based approach, agency-agents-zh demonstrates a **playbook pattern** — predefined workflows that guide agents through complex multi-step tasks:
+
+```markdown
+# playbook: feature-implementation.md
+## Trigger
+When a new feature is requested via sprint planning
+
+## Steps
+1. **Recon Agent**: Research existing code, identify integration points
+   - Output: research-brief.md
+   - Gate: Must identify at least 2 integration points
+   
+2. **Architect Agent**: Design implementation plan
+   - Input: research-brief.md
+   - Output: impl-plan.md  
+   - Gate: Must cover error handling + testing strategy
+   
+3. **Builder Agent**: Implement the feature
+   - Input: impl-plan.md
+   - Output: code changes
+   - Gate: All tests pass + lint clean
+   
+4. **QA Agent**: Review and test
+   - Input: code changes
+   - Output: qa-report.md
+   - Gate: No P0/P1 issues
+   
+5. **Deploy Agent**: Ship it
+   - Input: qa-report.md (passed)
+   - Output: deployment confirmation
+```
+
+### Playbook vs Script: When to Use Each
+
+| Dimension | Script Orchestration | Playbook Orchestration |
+|-----------|---------------------|----------------------|
+| Execution | Deterministic, automated | Guided, semi-automated |
+| Flexibility | Low (hard-coded steps) | High (agents interpret steps) |
+| Human involvement | Minimal | At quality gates |
+| Best for | Repetitive, well-defined tasks | Complex, judgment-heavy tasks |
+| Error recovery | Restart from checkpoint | Agent adapts and retries |
+
+### Implementing Playbooks in Bash
+
+```bash
+#!/bin/bash
+# playbook-runner.sh — Simple playbook executor
+
+PLAYBOOK_DIR="./playbooks"
+CURRENT_STEP_FILE="/tmp/playbook_current_step"
+
+run_playbook() {
+    local playbook="$1"
+    local step=1
+    
+    if [ -f "$CURRENT_STEP_FILE" ]; then
+        step=$(cat "$CURRENT_STEP_FILE")
+        echo "[PLAYBOOK] Resuming from step $step"
+    fi
+    
+    while true; do
+        local step_file="${PLAYBOOK_DIR}/${playbook}/step${step}.md"
+        [ ! -f "$step_file" ] && echo "[PLAYBOOK] All steps complete!" && break
+        
+        echo "[PLAYBOOK] Executing step $step..."
+        send_to_architect "$(cat "$step_file")"
+        
+        # Wait for agent to signal completion (via SPRINT.md or file creation)
+        wait_for_step_completion "$step"
+        
+        # Run quality gate
+        if ! run_gate "$playbook" "$step"; then
+            echo "[PLAYBOOK] Gate failed at step $step, requesting rework"
+            send_to_architect "Step $step quality gate failed. Please rework."
+            continue  # Retry same step
+        fi
+        
+        echo "$((step + 1))" > "$CURRENT_STEP_FILE"
+        step=$((step + 1))
+    done
+    
+    rm -f "$CURRENT_STEP_FILE"
+}
+```
+
+## 14.9 Next Steps
 
 Now that you have the foundation, consider adding:
 
@@ -176,5 +263,6 @@ Now that you have the foundation, consider adding:
 - **Progress tracking**: Monitor project progress and detect stalls
 - **Cross-project coordination**: Share resources between multiple orchestrators
 - **Self-healing**: Automatically recover from common failure patterns
+- **Playbooks**: Define reusable multi-step workflows for common task types
 
 Remember: A good orchestrator is honed, not designed. Every crash, every 429, every time an Agent slacks off — they're all telling you what to improve next.

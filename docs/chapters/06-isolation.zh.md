@@ -69,6 +69,8 @@ async function merge(mergeRequest: MergeReadyPayload) {
 - 存储成本——每个worktree是完整的代码副本
 - 延迟——需要等所有相关Agent完成后才能合并
 
+## 6.3 隔离方案二：职责分工（Tmux-Orchestrator / agency-agents-zh）
+
 不通过代码级隔离，而是通过职责分工避免冲突——"你改后端，我改前端"。
 
 ### 职责隔离

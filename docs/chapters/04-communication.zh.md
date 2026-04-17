@@ -44,7 +44,7 @@ send-keys会将多行文本中的每一行都解析为一次Enter，导致命令
 - 0.5秒延迟是经验值：不同终端/网络可能需要不同延迟
 - 只能单向：Agent无法主动向编排器发送结构化消息
 
-## 4.3 方案二：send-keys + capture-pane（Tmux-Orchestrator）
+## 4.2 方案二：send-keys + capture-pane（Tmux-Orchestrator）
 
 **原理**：用tmux send-keys发送消息，用tmux capture-pane读取Agent的屏幕输出。
 
@@ -77,7 +77,7 @@ tmux capture-pane -t "project:Claude-Agent" -p -S -50
 - 无法区分"正在处理"和"卡住了"
 - 终端缓冲区有限，历史消息可能被刷掉
 
-## 4.4 方案三：SQLite邮件系统（Overstory）
+## 4.3 方案三：SQLite邮件系统（Overstory）
 
 **原理**：用SQLite数据库实现异步消息队列，Agent通过CLI命令收发邮件。
 
@@ -130,7 +130,7 @@ ov mail check --inject
 - SQLite单写限制：高并发写入可能成为瓶颈
 - 复杂度高：需要理解9种协议类型
 
-## 4.5 方案四：共享文件协调（Composio）
+## 4.4 方案四：共享文件协调（Composio）
 
 **原理**：Orchestrator和Worker通过共享的todo.md和scratchpad文件协调工作。
 
@@ -156,7 +156,7 @@ Worker读取并更新：
 - 语义模糊：Markdown格式缺乏严格的解析规则
 - 丢失风险：文件损坏意味着进度信息全部丢失
 
-## 4.6 方案五：MCP记忆 + Copy-Paste交接（agency-agents-zh）
+## 4.5 方案五：MCP记忆 + Copy-Paste交接（agency-agents-zh）
 
 **默认模式**：人工驱动的Copy-Paste交接。
 
@@ -188,7 +188,7 @@ Here's our research brief: [粘贴 UX Researcher 输出]
 - MCP需要外部服务器
 - 无运行时执行保证
 
-## 4.7 深度解析：群体交接 vs SQLite邮件 - 详细对比
+## 4.6 深度解析：群体交接 vs SQLite邮件 - 详细对比
 
 ### 架构分歧
 
@@ -382,7 +382,7 @@ for (const msg of messages) {
 - 无缝集成的hook注入
 - 广播消息的组地址
 
-## 4.8 五种通信方案的深度对比
+## 4.7 五种通信方案的深度对比
 
 || 维度 | Bracket-Paste | send-keys | SQLite邮件 | 共享文件 | MCP记忆 |
 |------|-------------|-----------|-----------|---------|--------|
@@ -395,7 +395,7 @@ for (const msg of messages) {
 | **人可读性** | 是 | 是 | 需工具 | 是 | 是 |
 | **离线支持** | 否 | 否 | 是 | 是 | 取决于实现 |
 
-## 4.10 通信设计的核心原则
+## 4.8 通信设计的核心原则
 
 从五大项目中提炼的通信设计原则：
 

@@ -160,3 +160,74 @@ Complete rule guard system:
 ```
 
 Iron laws + guard scripts, soft and hard combined, form a complete constraint system.
+
+## 8.7 Beyond Bash: Overstory's Guard-Rules System
+
+Overstory takes rule enforcement further with a structured `guard-rules/` directory containing per-agent constraint files:
+
+```
+guard-rules/
+  builder.md      # Builder-specific constraints
+  scout.md        # Scout-specific constraints (read-only!)
+  coordinator.md  # Coordinator operational rules
+  global.md       # Rules applied to all agents
+```
+
+### Structured Constraint Format
+
+```markdown
+# guard-rules/builder.md
+## File Access
+- ALLOWED: src/**/*.ts, tests/**/*.ts
+- READ_ONLY: docs/**, specs/**
+- DENIED: .env, secrets/**, config/production.*
+
+## Behavioral Constraints
+- MAX_FILE_SIZE: 500 lines
+- REQUIRE_TESTS: true
+- NO_FORCE_PUSH: true
+
+## Escalation Triggers
+- File modification outside ALLOWED → immediate escalation
+- Missing tests for new code → warning + rework
+- Force push detected → critical alert
+```
+
+### Enforcement via AgentRuntime
+
+The key architectural insight is that guard-rules are enforced at the runtime adapter level, not at the prompt level:
+
+```typescript
+// Before every agent action, the runtime checks constraints
+class AgentRuntime {
+  async executeAction(action: AgentAction): Promise<Result> {
+    const rules = this.loadGuardRules(this.agentName);
+    
+    // File write check
+    if (action.type === 'write') {
+      if (rules.isDenied(action.filePath)) {
+        return { success: false, error: 'DENIED by guard-rules' };
+      }
+      if (rules.isReadOnly(action.filePath)) {
+        return { success: false, error: 'READ_ONLY by guard-rules' };
+      }
+    }
+    
+    return this.delegate(action);
+  }
+}
+```
+
+This means the agent never even gets the chance to violate rules — the runtime blocks prohibited actions before they execute. This is stronger than even the rule guard pattern because it's proactive (prevent) rather than reactive (detect + restore).
+
+### Guard-Rules vs Rule Guards Comparison
+
+| Dimension | Rule Guards (Ch 8.3) | Guard-Rules (Overstory) |
+|-----------|----------------------|------------------------|
+| Enforcement timing | Reactive (after violation) | Proactive (before execution) |
+| Scope | Prompt file integrity | Agent behavior + file access |
+| Implementation | Bash script + git checkout | Runtime adapter interception |
+| Flexibility | One-size-fits-all | Per-agent, per-rule |
+| False positive risk | Low (only checks markers) | Medium (may block legitimate actions) |
+
+**Recommendation**: Use both. Rule guards protect the prompt itself; guard-rules protect the project from agent actions. They operate at different layers and complement each other.

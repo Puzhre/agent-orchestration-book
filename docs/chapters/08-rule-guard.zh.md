@@ -160,3 +160,74 @@ rule_integrity_check() {
 ```
 
 铁律+守护，软硬结合，构成完整的约束体系。
+
+## 8.7 超越Bash：Overstory的Guard-Rules系统
+
+Overstory通过结构化的`guard-rules/`目录将规则执行推进一步，其中包含每个Agent的约束文件：
+
+```
+guard-rules/
+  builder.md      # Builder专用约束
+  scout.md        # Scout专用约束（只读！）
+  coordinator.md  # Coordinator运营规则
+  global.md       # 适用于所有Agent的规则
+```
+
+### 结构化约束格式
+
+```markdown
+# guard-rules/builder.md
+## 文件访问
+- ALLOWED: src/**/*.ts, tests/**/*.ts
+- READ_ONLY: docs/**, specs/**
+- DENIED: .env, secrets/**, config/production.*
+
+## 行为约束
+- MAX_FILE_SIZE: 500 lines
+- REQUIRE_TESTS: true
+- NO_FORCE_PUSH: true
+
+## 升级触发条件
+- 在ALLOWED之外修改文件 → 立即升级
+- 新代码缺少测试 → 警告 + 返工
+- 检测到force push → 严重告警
+```
+
+### 通过AgentRuntime执行
+
+关键架构洞察：guard-rules在运行时适配器层面执行，而非在Prompt层面：
+
+```typescript
+// 在每个Agent动作之前，运行时检查约束
+class AgentRuntime {
+  async executeAction(action: AgentAction): Promise<Result> {
+    const rules = this.loadGuardRules(this.agentName);
+    
+    // 文件写入检查
+    if (action.type === 'write') {
+      if (rules.isDenied(action.filePath)) {
+        return { success: false, error: 'DENIED by guard-rules' };
+      }
+      if (rules.isReadOnly(action.filePath)) {
+        return { success: false, error: 'READ_ONLY by guard-rules' };
+      }
+    }
+    
+    return this.delegate(action);
+  }
+}
+```
+
+这意味着Agent根本没有机会违反规则——运行时在禁止动作执行之前就将其拦截。这比规则守护模式更强，因为它是主动（预防）而非被动（检测+恢复）的。
+
+### Guard-Rules与规则守护对比
+
+| 维度 | 规则守护（Ch 8.3） | Guard-Rules（Overstory） |
+|------|-------------------|------------------------|
+| 执行时机 | 被动（违规后） | 主动（执行前） |
+| 作用范围 | Prompt文件完整性 | Agent行为 + 文件访问 |
+| 实现方式 | Bash脚本 + git checkout | 运行时适配器拦截 |
+| 灵活性 | 一刀切 | 按Agent、按规则定制 |
+| 误报风险 | 低（仅检查标记） | 中等（可能阻止合法操作） |
+
+**建议**：两者都用。规则守护保护Prompt本身；guard-rules保护项目免受Agent操作影响。它们在不同层面运作，互为补充。
