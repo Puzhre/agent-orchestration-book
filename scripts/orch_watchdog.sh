@@ -10,7 +10,7 @@
 #   3. Check if heartbeat is stale (> MAX_HEARTBEAT_AGE) → deep check
 #   4. All good → update tracking and exit
 
-SESSION="book-orch"
+SESSION="agent_orchestration_book"
 HERMES_CMD="hermes -p book chat --yolo"
 WORKDIR="/home/ubuntu/agent-orchestration-book"
 HEARTBEAT_FILE="/tmp/agent_orchestration_book_orch_heartbeat"
