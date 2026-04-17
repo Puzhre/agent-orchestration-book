@@ -190,36 +190,78 @@ Here's our research brief: [paste UX Researcher output]
 - MCP requires an external server
 - No runtime execution guarantee
 
-## 4.7 Deep Dive: Group Handoff vs SQLite Mail — Detailed Comparison
+## 4.7 Deep Dive: Swarm Handoff vs SQLite Mail — Detailed Comparison
 
 ### Architectural Divergence
 
-**Group Handoff (agency-agents-zh)** represents a human-AI collaborative workflow where context is passed through structured handoff templates, while **SQLite Mail (Overstory)** implements a machine-to-machine coordination system with typed protocol messages.
+**Swarm Handoff (Overstory)** represents a session-based state persistence system where agents save their work progress and resume across different sessions, while **SQLite Mail (Overstory)** implements a real-time inter-agent messaging system for coordination and task dispatch.
 
 ### Implementation Architecture
 
-#### Group Handoff: Memory-Based Context Passing
+#### Swarm Handoff: Session-Based State Persistence
 
 ```typescript
-// Core handoff workflow
-interface HandoffContext {
-  decisions: string[];        // Decision records
-  deliverables: string[];    // Deliverable list
-  tags: string[];            // Tags for search
-  checkpoint: string;        // Checkpoint location
+// Core session handoff workflow
+interface SessionCheckpoint {
+  agentName: string;         // Agent identity
+  taskId: string;            // Current task
+  sessionId: string;        // Session ID that created this checkpoint
+  timestamp: string;         // ISO timestamp
+  progressSummary: string;   // Human-readable progress summary
+  filesModified: string[];  // Paths modified since session start
+  currentBranch: string;    // Git branch state
+  pendingWork: string;      // Remaining work description
+  mulchDomains: string[];   // Expertise domains worked in
 }
 
-// MCP memory operations
-1. Agent A completes work → remember(decisions + deliverables + tags)
-2. Agent B starts → recall(search by tags)
-3. On failure → rollback(to checkpoint)
+// Session handoff lifecycle
+1. Session ends → saveCheckpoint() → create SessionHandoff record
+2. New session starts → resumeFromHandoff() → load SessionCheckpoint
+3. Work continues → completeHandoff() → clear previous checkpoint
 ```
 
 **Core Components:**
-- **7 standardized handoff templates**: Standard handoff, QA pass, QA fail, escalation report, stage gate, sprint handoff, incident handoff
-- **MCP Memory Server**: Provides semantic search and automatic context passing
-- **Rollback mechanism**: Unique capability to return to a previous checkpoint
-- **Human-driven default mode**: Copy-paste between Agent outputs and inputs
+- **Three-layer persistence model**: Identity (permanent) → Sandbox (git worktree) → Session (ephemeral)
+- **Session checkpointing**: Saves complete work state including modified files, progress, and pending tasks
+- **Handoff tracking**: Maintains handoff records for session continuity and debugging
+- **Automatic recovery**: Can resume from crashes, timeouts, or manual session switches
+
+#### SQLite Mail: Real-Time Inter-Agent Messaging
+
+```typescript
+// Strongly-typed mail system
+interface MailMessage {
+  id: string;                // Message ID
+  from: string;              // Sending agent
+  to: string;                // Receiving agent or "orchestrator"
+  subject: string;           // Subject
+  body: string;              // Body
+  type: MailProtocolType;    // Protocol type
+  priority: "low" | "normal" | "high" | "urgent"; // Priority
+  threadId: string | null;   // Conversation thread ID
+  payload: string | null;    // JSON-encoded structured data
+  read: boolean;             // Read status
+  createdAt: string;         // Creation timestamp
+}
+
+// 9 protocol types with structured payloads
+type MailProtocolType = 
+  | "dispatch"      // Coordinator → Lead: task dispatch
+  | "assign"        // Supervisor → Worker: work assignment
+  | "worker_done"    // Worker → Supervisor: task completed
+  | "merge_ready"    // Supervisor → Merger: request merge
+  | "merged"         // Merger → Supervisor: merge succeeded
+  | "merge_failed"   // Merger → Worker: merge failed
+  | "escalation"     // Any agent → Upper: issue escalation
+  | "health_check"   // Watchdog → Agent: health check
+  | "decision_gate"  // Agent → Human: human-machine decision gate
+```
+
+**Core Components:**
+- **SQLite WAL Mode**: Ensures concurrent access safety from multiple agents
+- **Hook Injection**: Automatically injects messages via UserPromptSubmit hook
+- **Group Addresses**: `@all`, `@builders`, `@scouts` auto-resolve to agent lists
+- **Threaded Conversations**: Maintain conversation context across messages
 
 #### SQLite Mail: Protocol-Based Coordination
 
