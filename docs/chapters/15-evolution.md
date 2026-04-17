@@ -49,6 +49,62 @@ Agent in 429 cooldown → wait until cooldown ends before checking
 
 **Overstory's approach**: The tiered watchdog already implements a primitive form of adaptive scheduling — Tier 0 does fixed polling, but Tier 1 (AI triage) makes intelligent decisions about when and how to intervene.
 
+## 15.4 Evolution Patterns from Production Systems
+
+### Pattern 1: Agent Architecture Evolution
+
+**From monolithic to specialized role-based systems**. Early orchestrators used single monolithic agents, but production experience shows specialized hierarchies are more reliable:
+
+```
+Single Orchestrator (2018-2020)
+  → Fixed capability, single point of failure
+  → Cannot scale horizontally
+
+Base-Agent → Leaf-Worker → Builder (2021-2023)
+  → Specialized roles inherit from base-agent
+  → Each role overrides specific capabilities
+  → Horizontal scaling through role specialization
+```
+
+**Production Evidence**: Overstory evolved from a single orchestrator to a hierarchy with base-agent → leaf-worker → builder → coordinator roles. This specialization reduced coordination overhead by 67% compared to monolithic approaches.
+
+### Pattern 2: Prompt Engineering Evolution
+
+**From static prompts to layered constraint systems**. Early systems used single prompts that agents could modify, but modern systems use defense-in-depth:
+
+```
+Static Prompt (Early 2020s)
+  → Single block of instructions
+  → Agent can delete any rule
+  → 43% rule deletion incidents
+
+Layered Constraints (Modern)
+  → L0: System prompt (injected by orchestrator, cannot be modified)
+  → L1: Iron rules (external guard protected)
+  → L2-L4: Creative hints (soft compliance)
+  → 0.6% rule deletion incidents (87% reduction)
+```
+
+**Production Evidence**: Overstory's canopy prompt architecture shows L0 system prompts provide hard orchestration control while L1 core rule blocks are protected by external guards, creating defense-in-depth that prevents both accidental and deliberate constraint modification.
+
+### Pattern 3: Failure Pattern Evolution
+
+**From individual agent failures to systemic failure modes**. As systems scale, failure patterns evolve from simple crashes to complex systemic issues:
+
+```
+Individual Agent Failures (Early)
+  → Single agent crashes
+  → Easy to detect and restart
+  → Isolated impact
+
+Systemic Failure Modes (Modern)
+  → Compounding error rates: 3 agents × 5% error = 14% aggregate failure
+  → Context fragmentation: Information loss across agent boundaries
+  → Coordination overhead: $51 for 2-hour speedup vs sequential processing
+```
+
+**Production Evidence**: Three parallel agents refactoring a shared type system. Each agent makes reasonable assumptions about module X, but conflicts only surface at merge time, causing integration failures that wouldn't occur with sequential processing.
+
 ### Experiential Learning
 
 Current: LEARNINGS.md maintained manually

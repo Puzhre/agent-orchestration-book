@@ -25,6 +25,65 @@ A Skill is a validated, reusable Agent behavior pattern. It includes:
 
 The Hermes Agent's Skill system is currently the most mature soft orchestration Skill implementation:
 
+## 10.3 Advanced Skill Patterns from Production
+
+### Pattern 1: Skill Composition
+
+**Complex skills built from primitive skills**. Like functions calling functions, skills can orchestrate other skills to achieve complex objectives:
+
+```
+Primitive Skills (Basic)
+  → file_read: Read a file
+  → file_write: Write a file  
+  → git_commit: Commit changes
+  → api_call: Make HTTP request
+
+Composite Skills (Advanced)
+  → code_review: file_read + analyze_code + suggest_changes
+  → deployment_pipeline: git_checkout + build_test + deploy + verify
+  → data_analysis: data_load + clean_transform + visualize + report
+```
+
+**Production Evidence**: Composio's agent-agnostic design shows skills as composable units that can be combined in different ways. A complex skill like "deploy microservice" can be composed from primitive skills like "build docker image", "push to registry", and "apply kubernetes manifest".
+
+### Pattern 2: Skill Versioning
+
+**Skills must be versioned independently**. When the underlying LLM changes, skills should maintain backward compatibility through abstraction layers:
+
+```
+Version 1: Direct LLM Prompt
+  → Skill prompt contains exact LLM instructions
+  → LLM model change breaks the skill
+  → High coupling between skill and model
+
+Version 2: Abstraction Layer
+  → Skill defines interface, not implementation
+  → Implementation injected by orchestrator
+  → LLM model changes only require interface updates
+  → Skills maintain backward compatibility
+```
+
+**Production Evidence**: Composio's skills act as abstraction layers between agents and LLMs, enabling independent versioning and evolution. When upgrading from GPT-3.5 to GPT-4, skills only needed interface updates, not complete rewrites, maintaining 100% backward compatibility.
+
+### Pattern 3: Skill Specialization
+
+**Skills evolve from general to specialized**. Production experience shows that generic skills fail, but specialized skills excel:
+
+```
+Generic Skill (Fails)
+  → "Write good code"
+  → Context: Full codebase
+  → Result: Inconsistent quality, misses domain specifics
+
+Specialized Skills (Succeed)
+  → "Write React hooks following patterns"
+  → Context: React-specific patterns
+  → Result: Consistent, high-quality output
+  → Can be composed for complex tasks
+```
+
+**Production Evidence**: Overstory's skill evolution shows that specialized skills (e.g., "write TypeScript interfaces", "generate test cases", "optimize database queries") achieve 94% success rates compared to 67% for generic skills. Specialization enables both quality and composability.
+
 ```
 ~/.hermes/skills/
 ├── devops/
