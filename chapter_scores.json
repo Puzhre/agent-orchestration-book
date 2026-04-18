@@ -2,28 +2,28 @@
   "criteria": {
     "depth": {
       "weight": 0.3,
-      "name": "\u6df1\u5ea6",
-      "description": "\u900f\u89c6\u672c\u8d28\uff0c\u63ed\u793awhy\u548chow\u4e0d\u53eawhat"
+      "name": "深度",
+      "description": "透视本质，揭示why和how不只what"
     },
     "evidence": {
       "weight": 0.25,
-      "name": "\u5b9e\u8bc1",
-      "description": "\u771f\u5b9e\u9879\u76ee\u6e90\u7801\u5bf9\u6bd4+\u5b9e\u6d4b\u6570\u636e+\u53ef\u590d\u73b0"
+      "name": "实证",
+      "description": "真实项目源码对比+实测数据+可复现"
     },
     "structure": {
       "weight": 0.2,
-      "name": "\u7ed3\u6784",
-      "description": "\u91d1\u5b57\u5854\u539f\u7406\uff0c\u6bcf\u8282\u56de\u7b54\u4e00\u4e2a\u6838\u5fc3\u95ee\u9898"
+      "name": "结构",
+      "description": "金字塔原理，每节回答一个核心问题"
     },
     "insight": {
       "weight": 0.15,
-      "name": "\u65b0\u77e5",
-      "description": "\u53cd\u76f4\u89c9\u6d1e\u5bdf\uff0c\u8bfb\u8fc7\u6e90\u7801\u4e5f\u672a\u5fc5\u77e5\u9053"
+      "name": "新知",
+      "description": "反直觉洞察，读过源码也未必知道"
     },
     "actionable": {
       "weight": 0.1,
-      "name": "\u53ef\u64cd\u4f5c",
-      "description": "\u53ef\u76f4\u63a5copy-paste\u8dd1\u7684\u4ee3\u7801+\u914d\u7f6e"
+      "name": "可操作",
+      "description": "可直接copy-paste跑的代码+配置"
     }
   },
   "scores": {
@@ -64,16 +64,16 @@
       "line_count": 232
     },
     "04-communication.md": {
-      "weighted_score": 7.6,
+      "weighted_score": 8.5,
       "dimension_scores": {
-        "depth": 8,
-        "evidence": 8,
-        "structure": 7,
-        "insight": 6,
+        "depth": 9,
+        "evidence": 9,
+        "structure": 8,
+        "insight": 8,
         "actionable": 9
       },
       "meets_graduation": false,
-      "line_count": 509
+      "line_count": 548
     },
     "05-fault-tolerance.md": {
       "weighted_score": 7.6,
@@ -124,28 +124,28 @@
       "line_count": 234
     },
     "09-prompt-engineering.md": {
-      "weighted_score": 8.2,
+      "weighted_score": 8.8,
       "dimension_scores": {
-        "depth": 8,
+        "depth": 9,
         "evidence": 9,
-        "structure": 7,
-        "insight": 8,
-        "actionable": 9
+        "structure": 8,
+        "insight": 9,
+        "actionable": 8
       },
       "meets_graduation": false,
-      "line_count": 242
+      "line_count": 293
     },
     "10-skill-system.md": {
-      "weighted_score": 7.9,
+      "weighted_score": 8.7,
       "dimension_scores": {
-        "depth": 7,
+        "depth": 9,
         "evidence": 9,
-        "structure": 7,
+        "structure": 8,
         "insight": 8,
         "actionable": 9
       },
       "meets_graduation": false,
-      "line_count": 685
+      "line_count": 789
     },
     "11-knowledge.md": {
       "weighted_score": 7.9,
@@ -184,28 +184,28 @@
       "line_count": 420
     },
     "14-hands-on.md": {
-      "weighted_score": 7.3,
+      "weighted_score": 8.2,
       "dimension_scores": {
-        "depth": 7,
-        "evidence": 8,
-        "structure": 7,
-        "insight": 6,
+        "depth": 8,
+        "evidence": 9,
+        "structure": 8,
+        "insight": 8,
         "actionable": 9
       },
       "meets_graduation": false,
-      "line_count": 410
+      "line_count": 479
     },
     "15-evolution.md": {
-      "weighted_score": 7.3,
+      "weighted_score": 8.1,
       "dimension_scores": {
-        "depth": 7,
-        "evidence": 8,
-        "structure": 7,
-        "insight": 6,
-        "actionable": 9
+        "depth": 8,
+        "evidence": 9,
+        "structure": 8,
+        "insight": 8,
+        "actionable": 8
       },
       "meets_graduation": false,
-      "line_count": 226
+      "line_count": 338
     }
   },
   "scoring_date": "2026-04-18"
