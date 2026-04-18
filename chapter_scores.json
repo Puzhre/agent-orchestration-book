@@ -1,0 +1,212 @@
+{
+  "criteria": {
+    "depth": {
+      "weight": 0.3,
+      "name": "\u6df1\u5ea6",
+      "description": "\u900f\u89c6\u672c\u8d28\uff0c\u63ed\u793awhy\u548chow\u4e0d\u53eawhat"
+    },
+    "evidence": {
+      "weight": 0.25,
+      "name": "\u5b9e\u8bc1",
+      "description": "\u771f\u5b9e\u9879\u76ee\u6e90\u7801\u5bf9\u6bd4+\u5b9e\u6d4b\u6570\u636e+\u53ef\u590d\u73b0"
+    },
+    "structure": {
+      "weight": 0.2,
+      "name": "\u7ed3\u6784",
+      "description": "\u91d1\u5b57\u5854\u539f\u7406\uff0c\u6bcf\u8282\u56de\u7b54\u4e00\u4e2a\u6838\u5fc3\u95ee\u9898"
+    },
+    "insight": {
+      "weight": 0.15,
+      "name": "\u65b0\u77e5",
+      "description": "\u53cd\u76f4\u89c9\u6d1e\u5bdf\uff0c\u8bfb\u8fc7\u6e90\u7801\u4e5f\u672a\u5fc5\u77e5\u9053"
+    },
+    "actionable": {
+      "weight": 0.1,
+      "name": "\u53ef\u64cd\u4f5c",
+      "description": "\u53ef\u76f4\u63a5copy-paste\u8dd1\u7684\u4ee3\u7801+\u914d\u7f6e"
+    }
+  },
+  "scores": {
+    "01-introduction.md": {
+      "weighted_score": 7.8,
+      "dimension_scores": {
+        "depth": 8,
+        "evidence": 9,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 5
+      },
+      "meets_graduation": false,
+      "line_count": 283
+    },
+    "02-architecture.md": {
+      "weighted_score": 7.6,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 392
+    },
+    "03-roles.md": {
+      "weighted_score": 7.6,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 232
+    },
+    "04-communication.md": {
+      "weighted_score": 7.6,
+      "dimension_scores": {
+        "depth": 8,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 6,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 509
+    },
+    "05-fault-tolerance.md": {
+      "weighted_score": 7.6,
+      "dimension_scores": {
+        "depth": 8,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 6,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 288
+    },
+    "06-isolation.md": {
+      "weighted_score": 7.6,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 266
+    },
+    "07-deployment.md": {
+      "weighted_score": 7.9,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 9,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 433
+    },
+    "08-rule-guard.md": {
+      "weighted_score": 7.6,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 234
+    },
+    "09-prompt-engineering.md": {
+      "weighted_score": 8.2,
+      "dimension_scores": {
+        "depth": 8,
+        "evidence": 9,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 242
+    },
+    "10-skill-system.md": {
+      "weighted_score": 7.9,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 9,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 685
+    },
+    "11-knowledge.md": {
+      "weighted_score": 7.9,
+      "dimension_scores": {
+        "depth": 8,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 237
+    },
+    "12-pipeline-orchestration.md": {
+      "weighted_score": 7.6,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 375
+    },
+    "13-antipatterns.md": {
+      "weighted_score": 7.9,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 9,
+        "structure": 7,
+        "insight": 8,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 420
+    },
+    "14-hands-on.md": {
+      "weighted_score": 7.3,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 6,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 410
+    },
+    "15-evolution.md": {
+      "weighted_score": 7.3,
+      "dimension_scores": {
+        "depth": 7,
+        "evidence": 8,
+        "structure": 7,
+        "insight": 6,
+        "actionable": 9
+      },
+      "meets_graduation": false,
+      "line_count": 226
+    }
+  },
+  "scoring_date": "2026-04-18"
+}
