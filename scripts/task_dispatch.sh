@@ -5,7 +5,7 @@
 #               tmux commands wrapped with timeout to prevent hangs
 set +u
 
-EXEC_SESSION="project_builder_exec"
+EXEC_SESSION="agent_orchestration_book"
 TMUX_TIMEOUT=10
 
 if [ -z "$1" ]; then
