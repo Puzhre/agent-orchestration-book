@@ -4,3 +4,5 @@ site/
 research/
 .crawl-cache/
 *.log
+.env
+legacy/
